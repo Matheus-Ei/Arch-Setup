@@ -8,13 +8,16 @@ read -p "Start the instalation? if yes press enter, else press <Contol+C>" start
 pacman -Syu
 
 ## System base packages
-pacman -S pulseaudio sudo 
+pacman -S pulseaudio sudo networkmanager dhcpcd
 
 ## Theme
 pacman -S gnome-themes-extra hyprland gtk4 hyprpaper wofi kitty nvidia nvidia-utils lib32-nvidia-utils egl-wayland
 
-## Tools 
+## Basic tools 
 pacman -S git neovim openssh base-devel firefox
+
+# User preference tools
+pacman -S dbeaver docker
 
 clear
 
@@ -38,8 +41,15 @@ nvim /etc/sudoers
 clear
 
 
-
 # Setup basic settings
+## Pacman
+echo "Setting up pacman... "
+echo "Edit the /etc/pacman.conf and uncomment the line: "
+echo "ParallelDownloads = 5"
+echo "And edit the lines to include multilib repository"
+read -p "Press enter to go to the file... "
+nvim /etc/pacman.conf
+
 ## Setup git
 echo "Setting up git... "
 read -p "Tell your git username: " gituser
@@ -68,14 +78,13 @@ echo "Setting up hyprland... "
 cd /home/$system_username/Downloads
 git clone git@github.com:Matheus-Ei/Hyprland-Settings.git
 cd Hyprland-Settings
-rm readme.md setup.sh
+rm readme.md
 mv hypr waybar wofi /home/$system_username/.config/
 cd /home/$system_username/Downloads
 rm -r Hyrland-Settings
 
 ## Yay
 echo "Setting up yay... "
-cd /home/$system_username/Downloads
 git clone https://aur.archlinux.org/yay.git
 cd yay
 makepkg -si
@@ -96,7 +105,8 @@ nvim /etc/modprobe.d/nvidia.conf
 
 mkinitcpio -P
 
-
+read -p "Press enter to reboot the system... " temp
+reboot
 
 
 
