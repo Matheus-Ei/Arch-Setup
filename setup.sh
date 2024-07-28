@@ -31,8 +31,7 @@ clear
 
 # System User Setup
 echo "Setting up the system user... "
-echo "What is your username?"
-read systemUsername
+read -p "What is your username?" systemUsername
 useradd -m -g users -G wheel,storage,power -s /bin/bash $systemUsername
 
 echo "Set a password:"
@@ -56,10 +55,10 @@ clear
 ## Setup git
 echo "Setting up git... "
 read -p "Tell your git username: " gituser
-git config --global user.name "$gituser"
+sudo -u $systemUsername git config --global user.name "$gituser"
 
 read -p "Tell your git email: " gitmail
-git config --global user.email "$gitmail"
+sudo -u $systemUsername git config --global user.email "$gitmail"
 
 ssh-keygen -t ed25519 -C "$gitmail" -f /home/$systemUsername/.ssh/id_ed25519
 echo "Copy the following key to your git and add this to the ssh keys"
