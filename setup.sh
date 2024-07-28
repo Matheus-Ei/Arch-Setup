@@ -19,7 +19,7 @@ pacman -Syu
 pacman -S pulseaudio sudo networkmanager dhcpcd
 
 ## Theme
-pacman -S gnome-themes-extra hyprland gtk4 hyprpaper wofi kitty nvidia nvidia-utils lib32-nvidia-utils egl-wayland
+pacman -S gnome-themes-extra hyprland gtk4 hyprpaper waybar wofi kitty nvidia nvidia-utils lib32-nvidia-utils egl-wayland
 
 ## Basic tools 
 pacman -S git neovim openssh base-devel firefox
