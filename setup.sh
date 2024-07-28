@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "Run this program as root"
-read -p "Start the instalation? (Y/n)" startInstall
+read -p "Start the instalation? (Y/n) " startInstall
 if [ "$startInstall" == "n" ]; then
     exit
 fi
@@ -28,7 +28,7 @@ pacman -S gnome-themes-extra hyprland gtk4 hyprpaper waybar wofi kitty nvidia nv
 pacman -S git neovim openssh base-devel 
 
 ## User preference tools
-read -p "Start user preference tool installer? (Y/n)" installUserPreference
+read -p "Start user preference tool installer? (Y/n) " installUserPreference
 if [ "$installUserPreference" == "n"]; then
     echo "Skipping the user preference tool installer... "
 else
@@ -39,9 +39,9 @@ clear
 
 # System User Setup
 echo "+++++ Setup system user +++++"
-read -p "What is your username?" systemUsername
+read -p "What is your username? " systemUsername
 
-read -p "Setup new user? (Y/n)" setupUser
+read -p "Setup new user? (Y/n) " setupUser
 if [ "$setupUser" == "n" ]; then
     echo "Skiping the user setup... "
 else
@@ -59,7 +59,7 @@ nvim /etc/sudoers
 
 ## Basic directiories
 echo "+++++ Setup basic directiories +++++"
-read -p "Setup basic directiories? (Y/n)" setupBasicDirectories
+read -p "Setup basic directiories? (Y/n) " setupBasicDirectories
 if [ "$setupBasicDirectories" == "n" ]; then
     echo "Skipping basic directories setup... "
 else 
@@ -71,28 +71,31 @@ clear
 
 
 # Setup basic settings
-read -P "Start yay installer? (Y/n)" installYay
+## Setup yay
+read -p "Start yay installer? (Y/n) " installYay
 if [ "$installYay" == "n" ]; then
     echo "Skipping the yay setup... "
 else 
     sudo -u $systemUsername sh ./yay.sh
+    cd /home/$systemUsername/Downloads
+    rm -r yay
 fi
 
 ## Setup git
 echo "+++++ Setup git +++++"
-read -p "Setup git config? (Y/n)" setupGit
+read -p "Setup git config? (Y/n) " setupGit
 if [ "$setupGit" == "n" ]; then
     echo "Skipping git config setup... "
 else
-    read -p "Tell your git username: " gituser
+    read -p "What is your git user? " gituser
     sudo -u $systemUsername git config --global user.name "$gituser"
 
-    read -p "Tell your git email: " gitmail
+    read -p "What is your git email? " gitmail
     sudo -u $systemUsername git config --global user.email "$gitmail"
 
 fi
 
-read -p "Setup ssh key on git? (Y/n)" setupSshKey
+read -p "Setup ssh key on git? (Y/n) " setupSshKey
 if [ "$setupSshKey" == "n" ]; then
     echo "Skipping the setup of the ssh key on git... "
 else
@@ -105,7 +108,7 @@ clear
 
 ## Nvim 
 echo "+++++ Setup neovim +++++"
-read -p "Setup neovim? (Y/n)" setupNeovim
+read -p "Setup neovim? (Y/n) " setupNeovim
 if [ "$setupNeovim" == "n" ]; then
     echo "Skipping neovim setup... "
 else 
@@ -115,7 +118,7 @@ fi
 
 ## Hyprland
 echo "+++++ Setup hyprland +++++"
-read -p "Setup hyprland? (Y/n)" setupHyrland
+read -p "Setup hyprland? (Y/n) " setupHyrland
 if [ "$setupHyrland" == "n" ]; then
     echo "Skipping hyprland setup... "
 else
