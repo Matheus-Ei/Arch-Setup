@@ -112,7 +112,7 @@ read -p "Setup neovim? (Y/n) " setupNeovim
 if [ "$setupNeovim" == "n" ]; then
     echo "Skipping neovim setup... "
 else 
-    git clone https://github.com/Matheus-Ei/Nvim-Settings.git
+    sudo -u $systemUsername git clone https://github.com/Matheus-Ei/Nvim-Settings.git
     mv Nvim-Settings /home/$systemUsername/.config/nvim
 fi
 
@@ -123,7 +123,7 @@ if [ "$setupHyrland" == "n" ]; then
     echo "Skipping hyprland setup... "
 else
     cd /home/$systemUsername/Downloads
-    git clone https://github.com/Matheus-Ei/Hyprland-Settings.git
+    sudo -u $systemUsername git clone https://github.com/Matheus-Ei/Hyprland-Settings.git
     cd Hyprland-Settings
     mv hypr waybar wofi /home/$systemUsername/.config/
     cd /home/$systemUsername/Downloads
