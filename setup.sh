@@ -10,8 +10,10 @@ fi
 ## Pacman
 echo "+++++ Setup pacman +++++"
 echo "Edit the /etc/pacman.conf and uncomment the line"
+echo "====----------------------===="
 echo "ParallelDownloads = 5"
-echo "And edit the lines to include multilib repository"
+echo "Edit the lines to include multilib repository"
+echo "====----------------------===="
 read -p "Press enter to go to the file... "
 nvim /etc/pacman.conf
 
@@ -43,7 +45,7 @@ read -p "What is your username? " systemUsername
 
 read -p "Setup new user? (Y/n) " setupUser
 if [ "$setupUser" == "n" ]; then
-    echo "Skiping the user setup... "
+    echo "Skipping the user setup... "
 else
     useradd -m -g users -G wheel,storage,power -s /bin/bash $systemUsername
 
@@ -51,11 +53,18 @@ else
     passwd $systemUsername
 fi
 
-echo "Now open /etc/sudoers and edit the line"
-echo "#%wheel ALL=(ALL:ALL) ALL"
-echo "Delete the # before the line"
-read -p "Press enter when ready... "
-nvim /etc/sudoers
+## Sudo Setup
+read -p "" setupSudo
+if [ "$setupSudo" == "n" ]; then
+    echo "Skipping sudo setup... "
+else
+    echo "Now open /etc/sudoers and edit the line and remove the # before the line"
+    echo "====----------------------===="
+    echo "#%wheel ALL=(ALL:ALL) ALL"
+    echo "====----------------------===="
+    read -p "Press enter when ready... "
+    nvim /etc/sudoers
+fi
 
 ## Basic directiories
 echo "+++++ Setup basic directiories +++++"
@@ -68,6 +77,10 @@ else
     cd -
 fi
 clear
+
+## Setup timeset
+echo "+++++ Setup timeset +++++"
+timedatectl set-timezone America/Sao_Paulo
 
 
 # Setup basic settings
@@ -130,24 +143,31 @@ else
     rm -r Hyrland-Settings
     clear
 
+
     ### Nvidia
-    echo "+++++ Setup nvidia for hyprland +++++"
-    echo "Edit the /etc/mkinitcpio.conf file and add this line there: "
-    echo "MODULES=(... nvidia nvidia_modeset nvidia_uvm nvidia_drm ...)"
-    read -p "Press enter when you are ready... "
-    nvim /etc/mkinitcpio.conf
+    read -p "Do you have a nvidia GPU? (Y/n) " hasNvidia
+    if [ "$hasNvidia" == "n" ]; then
+        echo "Skipping wayland nvidia setup... "
+    else
+        echo "+++++ Setup nvidia for hyprland +++++"
+        echo "Edit the /etc/mkinitcpio.conf file and add this line there: "
+        echo "====----------------------===="
+        echo "MODULES=(... nvidia nvidia_modeset nvidia_uvm nvidia_drm ...)"
+        echo "====----------------------===="
+        read -p "Press enter when you are ready... "
+        nvim /etc/mkinitcpio.conf
 
-    echo "Now edit the /etc/modprobe.d/nvidia.conf and add this line there: "
-    echo "options nvidia_drm modeset=1 fbdev=1"
-    read -p "Press enter when you are ready... "
-    nvim /etc/modprobe.d/nvidia.conf
+        echo "Now edit the /etc/modprobe.d/nvidia.conf and add this line there: "
+        echo "====----------------------===="
+        echo "options nvidia_drm modeset=1 fbdev=1"
+        echo "====----------------------===="
+        read -p "Press enter when you are ready... "
+        nvim /etc/modprobe.d/nvidia.conf
 
-    mkinitcpio -P
+        mkinitcpio -P
+    fi
 fi
 clear
 
 read -p "Press enter to reboot the system... "
 reboot
-
-
-
