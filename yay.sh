@@ -1,4 +1,4 @@
-read -p "System User: " systemUsername
+read -p "Username: " systemUsername
 
 ## Yay
 echo "Setting up yay... "

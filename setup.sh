@@ -32,9 +32,8 @@ read -p "Start user preference tool installer? (Y/n)" installUserPreference
 if [ "$installUserPreference" == "n"]; then
     echo "Skipping the user preference tool installer... "
 else
-    pacman -S dbeaver docker firefox
+    sh ./tools.sh
 fi
-
 clear
 
 
@@ -66,12 +65,19 @@ if [ "$setupBasicDirectories" == "n" ]; then
 else 
     cd /home/$systemUsername
     sudo -u $systemUsername mkdir Downloads Documents Pictures Commands Code .ssh .config
+    cd -
 fi
-
 clear
 
 
 # Setup basic settings
+read -P "Start yay installer? (Y/n)" installYay
+if [ "$installYay" == "n" ]; then
+    echo "Skipping the yay setup... "
+else 
+    sudo -u $systemUsername sh ./yay.sh
+fi
+
 ## Setup git
 echo "+++++ Setup git +++++"
 read -p "Setup git config? (Y/n)" setupGit
@@ -95,7 +101,6 @@ else
     cat /home/$systemUsername/.ssh/id_ed25519.pub
     read -p "Press enter when you finished... "
 fi
-
 clear
 
 ## Nvim 
@@ -136,6 +141,7 @@ else
 
     mkinitcpio -P
 fi
+clear
 
 read -p "Press enter to reboot the system... "
 reboot
