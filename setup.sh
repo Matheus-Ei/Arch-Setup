@@ -68,13 +68,13 @@ clear
 
 ## Nvim 
 echo "Setting up neovim... "
-git clone git@github.com:Matheus-Ei/Nvim-Settings.git
+git clone https://github.com/Matheus-Ei/Nvim-Settings.git
 mv Nvim-Settings /home/$systemUsername/.config/nvim
 
 ## Hyprland
 echo "Setting up hyprland... "
 cd /home/$systemUsername/Downloads
-git clone git@github.com:Matheus-Ei/Hyprland-Settings.git
+git clone https://github.com/Matheus-Ei/Hyprland-Settings.git
 cd Hyprland-Settings
 rm readme.md
 mv hypr waybar wofi /home/$systemUsername/.config/
