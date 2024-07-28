@@ -29,7 +29,7 @@ pacman -S git neovim openssh base-devel
 
 ## User preference tools
 read -p "Start user preference tool installer? (Y/n) " installUserPreference
-if [ "$installUserPreference" == "n"]; then
+if [ "$installUserPreference" == "n" ]; then
     echo "Skipping the user preference tool installer... "
 else
     sh ./tools.sh
