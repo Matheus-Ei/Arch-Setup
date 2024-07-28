@@ -4,6 +4,14 @@ read -p "Start the instalation? if yes press enter, else press <Contol+C>" start
 
 
 # Instalations
+## Pacman
+echo "Setting up pacman... "
+echo "Edit the /etc/pacman.conf and uncomment the line: "
+echo "ParallelDownloads = 5"
+echo "And edit the lines to include multilib repository"
+read -p "Press enter to go to the file... "
+nvim /etc/pacman.conf
+
 ## Update the system
 pacman -Syu
 
@@ -21,8 +29,6 @@ pacman -S dbeaver docker
 
 clear
 
-
-
 # System User Setup
 echo "Setting up the system user... "
 echo "What is your username?"
@@ -38,18 +44,15 @@ echo "Delete the # before the line"
 read -p "Press enter when ready... " temp
 nvim /etc/sudoers
 
+## Basic directiories
+echo "Setting up the basic directiories... "
+cd /home/$systemUsername
+mkdir Downloads Documents Pictures Commands Code .ssh .config
+
 clear
 
 
 # Setup basic settings
-## Pacman
-echo "Setting up pacman... "
-echo "Edit the /etc/pacman.conf and uncomment the line: "
-echo "ParallelDownloads = 5"
-echo "And edit the lines to include multilib repository"
-read -p "Press enter to go to the file... "
-nvim /etc/pacman.conf
-
 ## Setup git
 echo "Setting up git... "
 read -p "Tell your git username: " gituser
@@ -58,38 +61,27 @@ git config --global user.name "$gituser"
 read -p "Tell your git email: " gitmail
 git config --global user.email "$gitmail"
 
-ssh-keygen -t ed25519 -C "$gitmail"
+ssh-keygen -t ed25519 -C "$gitmail" -f /home/$systemUsername/.ssh/id_ed25519
 echo "Copy the following key to your git and add this to the ssh keys"
-cat /home/$system_username/.ssh/id_ed25519.pub
+cat /home/$systemUsername/.ssh/id_ed25519.pub
 read -p "Press enter when you finished... " temp
-
-## Basic directiories
-echo "Setting up the basic directiories... "
-cd
-mkdir Downloads Documents Pictures Commands Code
+clear
 
 ## Nvim 
 echo "Setting up neovim... "
 git clone git@github.com:Matheus-Ei/Nvim-Settings.git
-mv Nvim-Settings /home/$system_username/.config/nvim
+mv Nvim-Settings /home/$systemUsername/.config/nvim
 
 ## Hyprland
 echo "Setting up hyprland... "
-cd /home/$system_username/Downloads
+cd /home/$systemUsername/Downloads
 git clone git@github.com:Matheus-Ei/Hyprland-Settings.git
 cd Hyprland-Settings
 rm readme.md
-mv hypr waybar wofi /home/$system_username/.config/
-cd /home/$system_username/Downloads
+mv hypr waybar wofi /home/$systemUsername/.config/
+cd /home/$systemUsername/Downloads
 rm -r Hyrland-Settings
-
-## Yay
-echo "Setting up yay... "
-git clone https://aur.archlinux.org/yay.git
-cd yay
-makepkg -si
-cd /home/$system_username/Downloads
-rm -r yay
+clear
 
 ## Nvidia
 echo "Start the settings of nvidia... "
