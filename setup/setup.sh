@@ -5,38 +5,8 @@ if [ "$startInstall" == "n" ]; then
     exit
 fi
 
-
-# Instalations
-## Pacman
-echo "+++++ Setup pacman +++++"
-echo "Edit the /etc/pacman.conf and uncomment the line"
-echo "====----------------------===="
-echo "ParallelDownloads = 5"
-echo "Edit the lines to include multilib repository"
-echo "====----------------------===="
-read -p "Press enter to go to the file... "
-nvim /etc/pacman.conf
-
-## Update the system
-pacman -Syu
-
-## System base packages
-pacman -S pulseaudio pulseaudio-alsa alsa-utils sudo networkmanager dhcpcd
-
-## Theme
-pacman -S gnome-themes-extra hyprland gtk4 hyprpaper waybar wofi kitty nvidia nvidia-utils lib32-nvidia-utils egl-wayland
-
-## Basic tools 
-pacman -S git neovim openssh base-devel 
-
-## User preference tools
-read -p "Start user preference tool installer? (Y/n) " installUserPreference
-if [ "$installUserPreference" == "n" ]; then
-    echo "Skipping the user preference tool installer... "
-else
-    sh ./tools.sh
-fi
-clear
+# Packages setup
+sh ./scripts/packages-setup.sh
 
 
 # System User Setup
@@ -78,10 +48,6 @@ else
 fi
 clear
 
-## Setup timeset
-echo "+++++ Setup timeset +++++"
-timedatectl set-timezone America/Sao_Paulo
-
 
 # Setup basic settings
 ## Setup yay
@@ -89,9 +55,10 @@ read -p "Start yay installer? (Y/n) " installYay
 if [ "$installYay" == "n" ]; then
     echo "Skipping the yay setup... "
 else 
-    sudo -u $systemUsername sh ./yay.sh
+    sudo -u $systemUsername sh ./scripts/yay-setup.sh
     cd /home/$systemUsername/Downloads
     rm -r yay
+    cd -
 fi
 
 ## Setup git
@@ -105,7 +72,6 @@ else
 
     read -p "What is your git email? " gitmail
     sudo -u $systemUsername git config --global user.email "$gitmail"
-
 fi
 
 read -p "Setup ssh key on git? (Y/n) " setupSshKey
@@ -119,6 +85,7 @@ else
 fi
 clear
 
+
 ## Nvim 
 echo "+++++ Setup neovim +++++"
 read -p "Setup neovim? (Y/n) " setupNeovim
@@ -129,6 +96,7 @@ else
     mv Nvim-Settings /home/$systemUsername/.config/nvim
 fi
 
+
 ## Hyprland
 echo "+++++ Setup hyprland +++++"
 read -p "Setup hyprland? (Y/n) " setupHyrland
@@ -137,12 +105,14 @@ if [ "$setupHyrland" == "n" ]; then
 else
     cd /home/$systemUsername/Downloads
     sudo -u $systemUsername git clone https://github.com/Matheus-Ei/Hyprland-Settings.git
+    cd -
     cd Hyprland-Settings
     mv hypr waybar wofi /home/$systemUsername/.config/
+    cd -
     cd /home/$systemUsername/Downloads
     rm -r Hyrland-Settings
+    cd -
     clear
-
 
     ### Nvidia
     read -p "Do you have a nvidia GPU? (Y/n) " hasNvidia
