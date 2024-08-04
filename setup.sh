@@ -6,7 +6,7 @@ if [ "$startInstall" == "n" ]; then
 fi
 
 ## Has nvidia GPU
-read -p "Do you have a nvidia GPU? (Y/n) " hasNvidia
+read -p "Do you have a nvidia GPU? (y/N) " hasNvidia
 
 
 
@@ -203,9 +203,7 @@ else
     clear
 
     ### Nvidia
-    if [ "$hasNvidia" == "n" ]; then
-        echo "Skipping wayland nvidia setup... "
-    else
+    if [ "$hasNvidia" == "y" ]; then
         echo "+++++ Setup nvidia for hyprland +++++"
         echo "Edit the /etc/mkinitcpio.conf file and add this line there: "
         echo "====----------------------===="
@@ -222,6 +220,9 @@ else
         nvim /etc/modprobe.d/nvidia.conf
 
         mkinitcpio -P
+        
+    else
+        echo "Skipping wayland nvidia setup... "
     fi
 fi
 clear
