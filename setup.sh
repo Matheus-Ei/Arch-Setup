@@ -21,6 +21,7 @@ echo "Edit the lines to include multilib repository"
 echo "====----------------------===="
 read -p "Press enter to go to the file... "
 nvim /etc/pacman.conf
+clear
 
 ## Update the system
 echo "" | pacman -Syu  1> /dev/null 2>&1
@@ -114,6 +115,7 @@ else
     echo "====----------------------===="
     read -p "Press enter when ready... "
     nvim /etc/sudoers
+    clear
 fi
 
 ## Basic directiories
@@ -208,6 +210,7 @@ else
         echo "====----------------------===="
         read -p "Press enter when you are ready... "
         nvim /etc/mkinitcpio.conf
+        clear
 
         echo "Now edit the /etc/modprobe.d/nvidia.conf and add this line there: "
         echo "====----------------------===="
@@ -215,6 +218,7 @@ else
         echo "====----------------------===="
         read -p "Press enter when you are ready... "
         nvim /etc/modprobe.d/nvidia.conf
+        clear
 
         mkinitcpio -P
         
