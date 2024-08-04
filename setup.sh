@@ -30,13 +30,13 @@ echo "System upgraded"
 ## Nvidia GPU
 [ "$hasNvidia" == "y" ] && ( echo "" | pacman -S nvidia nvidia-utils lib32-nvidia-utils 1> /dev/null 2>&1 ) && echo "Nvidia packages installed... "
 ## System base packages
-pacman -S pulseaudio pulseaudio-alsa alsa-utils sudo networkmanager dhcpcd  1> /dev/null 2>&1
+echo "" | pacman -S pulseaudio pulseaudio-alsa alsa-utils sudo networkmanager dhcpcd  1> /dev/null 2>&1
 echo "System base packages installed... "
 ## Theme
-pacman -S gnome-themes-extra hyprland gtk4 hyprpaper waybar wofi kitty egl-wayland  1> /dev/null 2>&1
+echo "" | pacman -S gnome-themes-extra hyprland gtk4 hyprpaper waybar wofi kitty egl-wayland  1> /dev/null 2>&1
 echo "Theme packages installed... "
 ## Basic tools 
-pacman -S git neovim openssh base-devel  1> /dev/null 2>&1
+echo "" | pacman -S git neovim openssh base-devel  1> /dev/null 2>&1
 echo "Basic tools installed... "
 
 
@@ -49,42 +49,42 @@ else
     # Development tools
     echo "%%%% Development tools %%%%"
     read -p "Install docker? (y/N) " iDocker
-    [ "$iDocker" == "y" ] && pacman -S docker 1> /dev/null 2>&1 && echo "Docker installed... "
+    [ "$iDocker" == "y" ] && ( echo "" | pacman -S docker 1> /dev/null 2>&1 ) && echo "Docker installed... "
     read -p "Install dbeaver? (y/N) " iDbeaver
-    [ "$iDbeaver" == "y" ] && pacman -S dbeaver 1> /dev/null 2>&1 && echo "Dbeaver installed... "
+    [ "$iDbeaver" == "y" ] && ( echo "" | pacman -S dbeaver 1> /dev/null 2>&1 ) && echo "Dbeaver installed... "
     read -p "Install man? (y/N) " iMan
-    [ "$iMan" == "y" ] && pacman -S man 1> /dev/null 2>&1 && echo "Man installed... "
+    [ "$iMan" == "y" ] && ( echo "" | pacman -S man 1> /dev/null 2>&1 ) && echo "Man installed... "
     read -p "Install neovim? (y/N) " iNvim
-    [ "$iNvim" == "y" ] && pacman -S neovim 1> /dev/null 2>&1 && echo "Neovim installed... "
+    [ "$iNvim" == "y" ] && ( echo "" | pacman -S neovim 1> /dev/null 2>&1 ) && echo "Neovim installed... "
     read -p "Install git? (y/N) " iGit
-    [ "$iGit" == "y" ] && pacman -S git 1> /dev/null 2>&1 && echo "Git installed... "
+    [ "$iGit" == "y" ] && ( echo "" | pacman -S git 1> /dev/null 2>&1 ) && echo "Git installed... "
 
     # Browsers
     echo "%%%% Browsers %%%%"
     read -p "Install firefox? (y/N) " iFirefox
-    [ "$iFirefox" == "y" ] && pacman -S firefox 1> /dev/null 2>&1 && echo "Firefox installed... "
+    [ "$iFirefox" == "y" ] && ( echo "" | pacman -S firefox 1> /dev/null 2>&1 ) && echo "Firefox installed... "
     read -p "Install tor? (y/N) " iTor
-    [ "$iTor" == "y" ] && pacman -S torbrowser-launcher 1> /dev/null 2>&1 && echo "Tor installed... "
+    [ "$iTor" == "y" ] && ( echo "" | pacman -S torbrowser-launcher 1> /dev/null 2>&1 ) && echo "Tor installed... "
 
     # Programming languages
     echo "%%%% Programming languages %%%%"
     read -p "Install python? (y/N) " iPython
-    [ "$iPython" == "y" ] && pacman -S python python3 1> /dev/null 2>&1 && echo "Python installed... "
+    [ "$iPython" == "y" ] && ( echo "" | pacman -S python python3 1> /dev/null 2>&1 ) && echo "Python installed... "
     read -p "Install nodejs? (y/N) " iNodejs
-    [ "$iNodejs" == "y" ] && pacman -S nodejs 1> /dev/null 2>&1 && echo "Nodejs installed... "
+    [ "$iNodejs" == "y" ] && ( echo "" | pacman -S nodejs 1> /dev/null 2>&1 ) && echo "Nodejs installed... "
     read -p "Install java? (y/N) " iJava
-    [ "$iJava" == "y" ] && pacman -S jre-openjdk jdk-openjdk 1> /dev/null 2>&1 && echo "Java installed... "
+    [ "$iJava" == "y" ] && ( echo "" | pacman -S jre-openjdk jdk-openjdk 1> /dev/null 2>&1 ) && echo "Java installed... "
     read -p "Install C++? (y/N) " iCpp
-    [ "$iCpp" == "y" ] && pacman -S gcc 1> /dev/null 2>&1 && echo "C++ installed... "
+    [ "$iCpp" == "y" ] && ( echo "" | pacman -S gcc 1> /dev/null 2>&1 ) && echo "C++ installed... "
     read -p "Install postgresql? (y/N) " iPostgresql
-    [ "$iPostgresql" == "y" ] && pacman -S postgresql 1> /dev/null 2>&1 && echo "PostgreSql installed... "
+    [ "$iPostgresql" == "y" ] && ( echo "" | pacman -S postgresql 1> /dev/null 2>&1 ) && echo "PostgreSql installed... "
 
     # Ultilities
     echo "%%%% Ultilities %%%%"
     read -p "Install libreoffice suit? (y/N) " iLibreoffice
-    [ "$iLibreoffice" == "y" ] && pacman -S libreoffice 1> /dev/null 2>&1 && echo "Libreoffice installed... "
+    [ "$iLibreoffice" == "y" ] && ( echo "" | pacman -S libreoffice 1> /dev/null 2>&1 ) && echo "Libreoffice installed... "
     read -p "Install audacity? (y/N) " iAudacity
-    [ "$iAudacity" == "y" ] && pacman -S audacity 1> /dev/null 2>&1 && echo "Audacity installed... "
+    [ "$iAudacity" == "y" ] && ( echo "" | pacman -S audacity 1> /dev/null 2>&1 ) && echo "Audacity installed... "
 fi
 clear
 
@@ -144,7 +144,7 @@ else
     cd /home/$systemUsername/Downloads
     sudo -u $systemUsername git clone https://aur.archlinux.org/yay.git 1> /dev/null 2>&1 && echo "Yay repository cloned... "
     cd yay
-    sudo -u $systemUsername makepkg -si 1> /dev/null 2>&1 && echo "Yay installed... "
+    sudo -u $systemUsername ( echo "" | makepkg -si )#1> /dev/null 2>&1 ) && echo "Yay installed... "
 
     cd /home/$systemUsername/Downloads
     rm -r yay
@@ -168,7 +168,7 @@ read -p "Setup ssh key on git? (Y/n) " setupSshKey
 if [ "$setupSshKey" == "n" ]; then
     echo "Skipping the setup of the ssh key on git... "
 else
-    sudo -u $systemUsername ssh-keygen -t ed25519 -C "$gitmail" -f /home/$systemUsername/.ssh/id_ed25519 1> /dev/null 2>&1 && echo "The generation of the ssh key was a success... "
+    sudo -u $systemUsername ( echo "" | ssh-keygen -t ed25519 -C "$gitmail" -f /home/$systemUsername/.ssh/id_ed25519 ) # 1> /dev/null 2>&1 ) && echo "The generation of the ssh key was a success... "
     echo "Copy the following key to your git and add this to the ssh keys"
     cat /home/$systemUsername/.ssh/id_ed25519.pub
     read -p "Press enter when you finished... "
