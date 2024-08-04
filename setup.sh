@@ -21,6 +21,7 @@ echo "Edit the lines to include multilib repository"
 echo "====----------------------===="
 read -p "Press enter to go to the file... "
 nvim /etc/pacman.conf
+clear
 
 ## Update the system
 echo "" | pacman -Syu  1> /dev/null 2>&1
@@ -30,11 +31,11 @@ echo "System upgraded"
 ## Nvidia GPU
 [ "$hasNvidia" == "y" ] && ( echo "" | pacman -S nvidia nvidia-utils lib32-nvidia-utils 1> /dev/null 2>&1 ) && echo "Nvidia packages installed... "
 ## System base packages
-echo "" | pacman -S pulseaudio pulseaudio-alsa alsa-utils sudo networkmanager dhcpcd  1> /dev/null 2>&1 && echo "System base packages installed... "
+echo "" | pacman -S pulseaudio pulseaudio-alsa alsa-utils sudo networkmanager dhcpcd 1> /dev/null 2>&1 && echo "System base packages installed... "
 ## Theme
-echo "" | pacman -S gnome-themes-extra hyprland gtk4 hyprpaper waybar wofi kitty egl-wayland  1> /dev/null 2>&1 && echo "Theme packages installed... "
+echo "" | pacman -S gnome-themes-extra hyprland gtk4 hyprpaper waybar wofi kitty egl-wayland 1> /dev/null 2>&1 && echo "Theme packages installed... "
 ## Basic tools 
-echo "" | pacman -S git neovim openssh base-devel  1> /dev/null 2>&1 && echo "Basic tools installed... "
+echo "" | pacman -S git neovim openssh base-devel 1> /dev/null 2>&1 && echo "Basic tools installed... "
 
 
 
@@ -114,6 +115,7 @@ else
     echo "====----------------------===="
     read -p "Press enter when ready... "
     nvim /etc/sudoers
+    clear
 fi
 
 ## Basic directiories
@@ -208,6 +210,7 @@ else
         echo "====----------------------===="
         read -p "Press enter when you are ready... "
         nvim /etc/mkinitcpio.conf
+        clear
 
         echo "Now edit the /etc/modprobe.d/nvidia.conf and add this line there: "
         echo "====----------------------===="
@@ -215,6 +218,7 @@ else
         echo "====----------------------===="
         read -p "Press enter when you are ready... "
         nvim /etc/modprobe.d/nvidia.conf
+        clear
 
         mkinitcpio -P
         
