@@ -104,7 +104,6 @@ else
         echo "" | pacman -S python python3 1> /dev/null 2>&1
         echo "Python installed... "
     fi
-
     read -p "Install nodejs? (y/N) " iNodejs
     if [ "$iNodejs" == "y" ]; then
         echo "" | pacman -S nodejs 1> /dev/null 2>&1
@@ -164,10 +163,11 @@ else
     echo "Password setup was a success... "
 
     read -p "Press enter when ready... "
+    clear
 fi
 
 ## Sudo Setup
-read -p "" setupSudo
+read -p "Setup sudo? " setupSudo
 if [ "$setupSudo" == "n" ]; then
     echo "Skipping sudo setup... "
 else
@@ -211,6 +211,7 @@ else
 
     cd /home/$systemUsername/Downloads
     rm -r yay
+    clear
 fi
 
 ## Setup git
@@ -238,8 +239,8 @@ else
     echo "Copy the following key to your git and add this to the ssh keys"
     cat /home/$systemUsername/.ssh/id_ed25519.pub
     read -p "Press enter when you finished... "
+    clear
 fi
-clear
 
 ## Nvim 
 echo "+++++ Setup neovim +++++"
