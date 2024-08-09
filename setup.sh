@@ -31,17 +31,17 @@ echo "System upgraded..."
 
 ## Nvidia GPU
 if [ "$hasNvidia" == "y" ]; then
-    echo "" | pacman -S nvidia nvidia-utils lib32-nvidia-utils 1> /dev/null
+    echo -e "\n\n" | pacman -S nvidia nvidia-utils lib32-nvidia-utils 1> /dev/null 2>&1
     echo "Nvidia packages installed... "
 fi
 ## System base packages
-echo "" | pacman -S pulseaudio pulseaudio-alsa alsa-utils sudo networkmanager dhcpcd 1> /dev/null
+echo "" | pacman -S pulseaudio pulseaudio-alsa alsa-utils sudo networkmanager dhcpcd 1> /dev/null 2>&1
 echo "System base packages installed... "
 ## Theme
-echo "" | pacman -S gnome-themes-extra hyprland gtk4 hyprpaper waybar wofi kitty egl-wayland 1> /dev/null
+echo "" | pacman -S gnome-themes-extra hyprland gtk4 hyprpaper waybar wofi kitty egl-wayland 1> /dev/null 2>&1
 echo "Theme packages installed... "
 ## Basic tools 
-echo "" | pacman -S git neovim wl-clipboard openssh base-devel 1> /dev/null
+echo "" | pacman -S git neovim wl-clipboard openssh base-devel 1> /dev/null 2>&1
 echo "Basic tools installed... "
 
 
