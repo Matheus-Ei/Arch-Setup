@@ -38,7 +38,7 @@ fi
 echo "" | pacman -S pulseaudio pulseaudio-alsa alsa-utils sudo networkmanager dhcpcd 1> /dev/null 2>&1
 echo "System base packages installed... "
 ## Theme
-echo "" | pacman -S gnome-themes-extra hyprland gtk4 hyprpaper waybar wofi kitty egl-wayland 1> /dev/null 2>&1
+echo -e "\n\n" | pacman -S gnome-themes-extra hyprland gtk4 hyprpaper waybar wofi kitty egl-wayland 1> /dev/null 2>&1
 echo "Theme packages installed... "
 ## Basic tools 
 echo "" | pacman -S git neovim wl-clipboard openssh base-devel 1> /dev/null 2>&1
@@ -47,7 +47,8 @@ echo "Basic tools installed... "
 
 
 ## User preference tools
-read -p "Start user preference tool installer? (Y/n) " installUserPreference
+echo "Start user preference tool installer? (Y/n) "
+read installUserPreference
 if [ "$installUserPreference" == "n" ]; then
     echo "Skipping the user preference tool installer... "
 else
