@@ -47,15 +47,13 @@ echo "Basic tools installed... "
 
 
 ## User preference tools
-echo "Start user preference tool installer? (Y/n) "
-read installUserPreference
+read -p "Start user preference tool installer? (Y/n) " installUserPreference
 if [ "$installUserPreference" == "n" ]; then
     echo "Skipping the user preference tool installer... "
 else
     # Development tools
     echo "%%%% Development tools %%%%"
-    read -p "Install docker? (y/N) " iDocker
-    if [ "$iDocker" == "y" ]; then 
+    read -p "Install docker? (y/N) " iDocker if [ "$iDocker" == "y" ]; then 
        echo "" | pacman -S docker 1> /dev/null 2>&1
        echo "Docker installed... "
     fi
@@ -168,7 +166,7 @@ else
 fi
 
 ## Sudo Setup
-read -p "Setup sudo? " setupSudo
+read -p "Setup sudo? (Y/n) " setupSudo
 if [ "$setupSudo" == "n" ]; then
     echo "Skipping sudo setup... "
 else
