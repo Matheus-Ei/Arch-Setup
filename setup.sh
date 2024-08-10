@@ -54,7 +54,8 @@ if [ "$installUserPreference" == "n" ]; then
 else
     # Development tools
     echo "%%%% Development tools %%%%"
-    read -p "Install docker? (y/N) " iDocker if [ "$iDocker" == "y" ]; then 
+    read -p "Install docker? (y/N) " iDocker 
+    if [ "$iDocker" == "y" ]; then 
        echo "" | pacman -S docker
        clear
        echo "Docker installed... "
