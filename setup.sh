@@ -63,17 +63,15 @@ else
 
     read -p "Install dbeaver? (y/N) " iDbeaver
     if [ "$iDbeaver" == "y" ]; then
-        echo "" | pacman -S dbeaver
+        echo -e "\n" | pacman -S dbeaver
         clear
         echo "Dbeaver installed... "
     fi
 
     read -p "Install man? (y/N) " iMan
     if [ "$iMan" == "y" ]; then
-        echo "" | pacman -S man
-        clear
-        echo "Man installed... "
-    fi
+        echo -e "\n" | pacman -S man
+        clear echo "Man installed... " fi
 
     read -p "Install neovim? (y/N) " iNvim
     if [ "$iNvim" == "y" ]; then
@@ -93,7 +91,7 @@ else
     echo "%%%% Browsers %%%%"
     read -p "Install firefox? (y/N) " iFirefox
     if [ "$iFirefox" == "y" ]; then
-        echo "" | pacman -S firefox
+        echo -e "\n" | pacman -S firefox
         clear
         echo "Firefox installed... "
     fi
@@ -122,7 +120,7 @@ else
 
     read -p "Install java? (y/N) " iJava
     if [ "$iJava" == "y" ]; then
-        echo "" | pacman -S jre-openjdk jdk-openjdk
+        echo "" | pacman -S jdk-openjdk
         clear
         echo "Java installed... "
     fi
@@ -145,7 +143,7 @@ else
     echo "%%%% Ultilities %%%%"
     read -p "Install libreoffice suit? (y/N) " iLibreoffice
     if [ "$iLibreoffice" == "y" ]; then
-        echo "" | pacman -S libreoffice
+        echo -e "\n" | pacman -S libreoffice
         clear
         echo "Libreoffice installed... "
     fi
@@ -172,8 +170,17 @@ else
     useradd -m -g users -G wheel,storage,power -s /bin/bash $systemUsername 1> /dev/null 2>&1
     echo "User setup was concluded... " 
 
-    echo "Now set a password"
-    passwd $systemUsername
+    read -p "Now set a password: " userPassword
+    read -p "Repeat the password: " repeatPassword
+
+    while [ $userPassword != $repeatPassword ]
+    do
+        echo "The passwords don't match... try again... "
+        read -p "Now set a password: " userPassword
+        read -p "Repeat the password: " repeatPassword
+    done
+
+    echo "$systemUsername:$userPassword" | sudo chpasswd
     echo "Password setup was a success... "
 
     read -p "Press enter when ready... "
@@ -220,7 +227,7 @@ else
     echo "Yay repository cloned... "
 
     cd yay
-    echo -e "\n" | sudo -u $systemUsername makepkg -si 1> /dev/null 2>&1
+    echo -e "$userPassword\n\n" | sudo -u $systemUsername makepkg -si 1> /dev/null 2>&1
     echo "Yay installed... "
 
     cd /home/$systemUsername/Downloads
