@@ -60,26 +60,23 @@ else
        clear
        echo "Docker installed... "
     fi
-
     read -p "Install dbeaver? (y/N) " iDbeaver
     if [ "$iDbeaver" == "y" ]; then
         echo -e "\n" | pacman -S dbeaver
         clear
         echo "Dbeaver installed... "
     fi
-
     read -p "Install man? (y/N) " iMan
     if [ "$iMan" == "y" ]; then
         echo -e "\n" | pacman -S man
-        clear echo "Man installed... " fi
-
+        clear echo "Man installed... "
+    fi
     read -p "Install neovim? (y/N) " iNvim
     if [ "$iNvim" == "y" ]; then
         echo "" | pacman -S neovim
         clear
         echo "Neovim installed... "
     fi
-
     read -p "Install git? (y/N) " iGit
     if [ "$iGit" == "y" ]; then
         echo "" | pacman -S git
@@ -95,7 +92,6 @@ else
         clear
         echo "Firefox installed... "
     fi
-
     read -p "Install tor? (y/N) " iTor
     if [ "$iTor" == "y" ]; then
         echo "" | pacman -S torbrowser-launcher
@@ -117,21 +113,18 @@ else
         clear
         echo "Nodejs installed... "
     fi
-
     read -p "Install java? (y/N) " iJava
     if [ "$iJava" == "y" ]; then
         echo "" | pacman -S jdk-openjdk
         clear
         echo "Java installed... "
     fi
-
     read -p "Install C++? (y/N) " iCpp
     if [ "$iCpp" == "y" ]; then
         echo "" | pacman -S gcc
         clear
         echo "C++ installed... "
     fi
-
     read -p "Install postgresql? (y/N) " iPostgresql
     if [ "$iPostgresql" == "y" ]; then
         echo "" | pacman -S postgresql
@@ -147,7 +140,6 @@ else
         clear
         echo "Libreoffice installed... "
     fi
-
     read -p "Install audacity? (y/N) " iAudacity
     if [ "$iAudacity" == "y" ]; then
         echo "" | pacman -S audacity
