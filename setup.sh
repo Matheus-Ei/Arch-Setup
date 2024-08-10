@@ -10,7 +10,6 @@ read -p "Do you have a nvidia GPU? (y/N) " hasNvidia
 
 
 
-
 # Packages setup
 ## Pacman
 echo "+++++ Setup pacman +++++"
@@ -31,20 +30,22 @@ echo "System upgraded..."
 
 ## Nvidia GPU
 if [ "$hasNvidia" == "y" ]; then
-    echo -e "\n\n" | pacman -S nvidia nvidia-utils lib32-nvidia-utils 1> /dev/null 2>&1
+    echo -e "\n" | pacman -S nvidia nvidia-utils lib32-nvidia-utils 1> /dev/null 2>&1
     echo "Nvidia packages installed... "
 fi
+
 ## System base packages
 echo "" | pacman -S pulseaudio pulseaudio-alsa alsa-utils sudo networkmanager dhcpcd 1> /dev/null 2>&1
 echo "System base packages installed... "
+
 ## Theme
 echo -e "\n\n" | pacman -S gnome-themes-extra hyprland gtk4 hyprpaper waybar wofi kitty egl-wayland 1> /dev/null 2>&1
 echo "Theme packages installed... "
+
 ## Basic tools 
 echo "" | pacman -S git neovim wl-clipboard openssh base-devel 1> /dev/null 2>&1
 echo "Basic tools installed... "
-
-
+clear
 
 ## User preference tools
 read -p "Start user preference tool installer? (Y/n) " installUserPreference
@@ -54,31 +55,36 @@ else
     # Development tools
     echo "%%%% Development tools %%%%"
     read -p "Install docker? (y/N) " iDocker if [ "$iDocker" == "y" ]; then 
-       echo "" | pacman -S docker 1> /dev/null 2>&1
+       echo "" | pacman -S docker
+       clear
        echo "Docker installed... "
     fi
 
     read -p "Install dbeaver? (y/N) " iDbeaver
     if [ "$iDbeaver" == "y" ]; then
-        echo "" | pacman -S dbeaver 1> /dev/null 2>&1
+        echo "" | pacman -S dbeaver
+        clear
         echo "Dbeaver installed... "
     fi
 
     read -p "Install man? (y/N) " iMan
     if [ "$iMan" == "y" ]; then
-        echo "" | pacman -S man 1> /dev/null 2>&1
+        echo "" | pacman -S man
+        clear
         echo "Man installed... "
     fi
 
     read -p "Install neovim? (y/N) " iNvim
     if [ "$iNvim" == "y" ]; then
-        echo "" | pacman -S neovim 1> /dev/null 2>&1
+        echo "" | pacman -S neovim
+        clear
         echo "Neovim installed... "
     fi
 
     read -p "Install git? (y/N) " iGit
     if [ "$iGit" == "y" ]; then
-        echo "" | pacman -S git 1> /dev/null 2>&1
+        echo "" | pacman -S git
+        clear
         echo "Git installed... "
     fi
 
@@ -86,13 +92,15 @@ else
     echo "%%%% Browsers %%%%"
     read -p "Install firefox? (y/N) " iFirefox
     if [ "$iFirefox" == "y" ]; then
-        echo "" | pacman -S firefox 1> /dev/null 2>&1
+        echo "" | pacman -S firefox
+        clear
         echo "Firefox installed... "
     fi
 
     read -p "Install tor? (y/N) " iTor
     if [ "$iTor" == "y" ]; then
-        echo "" | pacman -S torbrowser-launcher 1> /dev/null 2>&1
+        echo "" | pacman -S torbrowser-launcher
+        clear
         echo "Tor installed... "
     fi
 
@@ -100,30 +108,35 @@ else
     echo "%%%% Programming languages %%%%"
     read -p "Install python? (y/N) " iPython
     if [ "$iPython" == "y" ]; then
-        echo "" | pacman -S python python3 1> /dev/null 2>&1
+        echo "" | pacman -S python python3
+        clear
         echo "Python installed... "
     fi
     read -p "Install nodejs? (y/N) " iNodejs
     if [ "$iNodejs" == "y" ]; then
-        echo "" | pacman -S nodejs 1> /dev/null 2>&1
+        echo "" | pacman -S nodejs
+        clear
         echo "Nodejs installed... "
     fi
 
     read -p "Install java? (y/N) " iJava
     if [ "$iJava" == "y" ]; then
-        echo "" | pacman -S jre-openjdk jdk-openjdk 1> /dev/null 2>&1
+        echo "" | pacman -S jre-openjdk jdk-openjdk
+        clear
         echo "Java installed... "
     fi
 
     read -p "Install C++? (y/N) " iCpp
     if [ "$iCpp" == "y" ]; then
-        echo "" | pacman -S gcc 1> /dev/null 2>&1
+        echo "" | pacman -S gcc
+        clear
         echo "C++ installed... "
     fi
 
     read -p "Install postgresql? (y/N) " iPostgresql
     if [ "$iPostgresql" == "y" ]; then
-        echo "" | pacman -S postgresql 1> /dev/null 2>&1
+        echo "" | pacman -S postgresql
+        clear
         echo "PostgreSql installed... "
     fi
 
@@ -131,18 +144,19 @@ else
     echo "%%%% Ultilities %%%%"
     read -p "Install libreoffice suit? (y/N) " iLibreoffice
     if [ "$iLibreoffice" == "y" ]; then
-        echo "" | pacman -S libreoffice 1> /dev/null 2>&1
+        echo "" | pacman -S libreoffice
+        clear
         echo "Libreoffice installed... "
     fi
 
     read -p "Install audacity? (y/N) " iAudacity
     if [ "$iAudacity" == "y" ]; then
-        echo "" | pacman -S audacity 1> /dev/null 2>&1
+        echo "" | pacman -S audacity
+        clear
         echo "Audacity installed... "
     fi
 fi
 clear
-
 
 
 
@@ -187,9 +201,9 @@ if [ "$setupBasicDirectories" == "n" ]; then
 else 
     cd /home/$systemUsername
     sudo -u $systemUsername mkdir Downloads Documents Pictures Commands Code .ssh .config
+    clear
 fi
 clear
-
 
 
 
@@ -205,13 +219,15 @@ else
     echo "Yay repository cloned... "
 
     cd yay
-    sudo -u $systemUsername makepkg -si
+    echo -e "\n" | sudo -u $systemUsername makepkg -si 1> /dev/null 2>&1
     echo "Yay installed... "
 
     cd /home/$systemUsername/Downloads
     rm -r yay
     clear
 fi
+clear
+
 
 ## Setup git
 echo "+++++ Setup git +++++"
@@ -241,11 +257,11 @@ else
     clear
 fi
 
+
 ## Nvim 
 echo "+++++ Setup neovim +++++"
 read -p "Setup neovim? (Y/n) " setupNeovim
-if [ "$setupNeovim" == "n" ]; then
-    echo "Skipping neovim setup... "
+if [ "$setupNeovim" == "n" ]; then echo "Skipping neovim setup... "
 else 
     sudo -u $systemUsername git clone https://github.com/Matheus-Ei/Nvim-Settings.git 1> /dev/null 2>&1
     echo "Cloning neovim settings repository... "
@@ -253,6 +269,7 @@ else
     mv Nvim-Settings /home/$systemUsername/.config/nvim
     echo "Neovim installed... "
 fi
+
 
 ## Hyprland
 echo "+++++ Setup hyprland +++++"
@@ -292,11 +309,14 @@ else
         clear
 
         mkinitcpio -P
+        clear
     else
         echo "Skipping wayland nvidia setup... "
     fi
 fi
 clear
+
+
 
 read -p "Press enter to reboot the system... "
 reboot
