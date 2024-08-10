@@ -69,7 +69,8 @@ else
     read -p "Install man? (y/N) " iMan
     if [ "$iMan" == "y" ]; then
         echo -e "\n" | pacman -S man
-        clear echo "Man installed... "
+        clear
+        echo "Man installed... "
     fi
     read -p "Install neovim? (y/N) " iNvim
     if [ "$iNvim" == "y" ]; then
@@ -187,7 +188,7 @@ else
     echo "Now open /etc/sudoers and edit the line and remove the # before the line"
     echo "====----------------------===="
     echo "#%wheel ALL=(ALL:ALL) ALL"
-    echo "====----------------------===="
+    echo -e "====----------------------====\n"
     read -p "Press enter when ready... "
     nvim /etc/sudoers
     clear
@@ -219,7 +220,9 @@ else
     echo "Yay repository cloned... "
 
     cd yay
-    echo -e "$userPassword\n\n" | sudo -u $systemUsername makepkg -si 1> /dev/null 2>&1
+    sudo -u $systemUsername makepkg -si
+    clear
+    sleep 1
     echo "Yay installed... "
 
     cd /home/$systemUsername/Downloads
@@ -289,13 +292,56 @@ else
     rm -r Hyrland-Settings
     clear
 
+    ### Hyprland, waybar and hyprpaper setup
+    cd /home/$systemUsername/.config/
+
+    echo "+++++ Setup hyprland monitors +++++"
+    echo "Edit the hypr/hyprland.conf file and change this line there with your monitors: "
+    echo "====----------------------===="
+    echo "monitor=MONITORPORT,preferred,0x0,auto"
+    echo "====----------------------===="
+    echo -e "\nYou can find your monitor or monitors ports here" 
+    echo "if you have more than 1 monitor, just add more than 1 line like the above"
+    sleep 1
+    xrandr
+
+    read -p "press enter when you are ready... "
+    nvim hypr/hyprland.conf
+    clear
+   
+
+    echo "Edit the hypr/hyprpaper.conf file and change this line to set your wallpaper: "
+    echo "====----------------------===="
+    echo "wallpaper = MONITORPORT,~/.config/hypr/wallpaper/wallpaper1.jpg"
+    echo "====----------------------===="
+    echo -e "\nYou can find your monitor or monitors ports here" 
+    echo "if you have more than 1 monitor, just add more than 1 line like the above"
+    sleep 1
+    xrandr
+
+    read -p "press enter when you are ready... "
+    nvim hypr/hyprpaper.conf
+    clear
+
+    echo "Edit the waybar/config file and change this to set the width of your bar: "
+    echo "====----------------------===="
+    echo '"width": the_width_of_your_monitor'
+    echo "====----------------------===="
+    echo -e "\nYou can find the width of your monitor here" 
+    sleep 1
+    xrandr
+
+    read -p "press enter when you are ready... "
+    nvim waybar/config
+    clear
+
     ### Nvidia
     if [ "$hasNvidia" == "y" ]; then
         echo "+++++ Setup nvidia for hyprland +++++"
         echo "Edit the /etc/mkinitcpio.conf file and add this line there: "
         echo "====----------------------===="
         echo "MODULES=(... nvidia nvidia_modeset nvidia_uvm nvidia_drm ...)"
-        echo "====----------------------===="
+        echo -e "====----------------------====\n"
         read -p "Press enter when you are ready... "
         nvim /etc/mkinitcpio.conf
         clear
@@ -303,7 +349,7 @@ else
         echo "Now edit the /etc/modprobe.d/nvidia.conf and add this line there: "
         echo "====----------------------===="
         echo "options nvidia_drm modeset=1 fbdev=1"
-        echo "====----------------------===="
+        echo -e "====----------------------====\n"
         read -p "Press enter when you are ready... "
         nvim /etc/modprobe.d/nvidia.conf
         clear
