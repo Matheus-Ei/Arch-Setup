@@ -8,6 +8,8 @@ fi
 ## Has nvidia GPU
 read -p "Do you have a nvidia GPU? (y/N) " hasNvidia
 clear
+
+
 # Packages setup
 ## Pacman
 echo "The pacman setup is needed for the rest of the system to work! just skip if you already had done!"
@@ -39,7 +41,7 @@ if [ "$hasNvidia" == "y" ]; then
 fi
 
 ## System base packages
-echo "" | pacman -S pulseaudio pulseaudio-alsa pulseaudio-bluez alsa-utils sudo networkmanager dhcpcd bluez wget curl 1> /dev/null 2>&1
+echo "" | pacman -S pulseaudio pulseaudio-alsa alsa-utils sudo networkmanager dhcpcd bluez wget curl 1> /dev/null 2>&1
 echo "System base packages installed... "
 
 ## Theme
@@ -54,7 +56,11 @@ clear
 
 ## User preference tools
 read -p "Start user preference tool installer? (Y'es/n'o/a'll) " installUserPreference
-packagesToInstall=("tmux" "yazi" "bashtop" "docker" "dbeaver" "man" "neovim" "git" "firefox" "torbrowser-launcher" "python" "python3" "nodejs" "jdk-openjdk" "gcc" "postgresql" "libreoffice" "audacity" "gimp" "obs-studio")
+packagesToInstall=("tmux" "yazi" "bashtop"
+                   "docker" "dbeaver" "man" "neovim" "git" "qbittorrent"
+                   "firefox" "torbrowser-launcher"
+                   "python" "python3" "nodejs" "jdk-openjdk" "gcc" "postgresql"
+                   "libreoffice" "audacity" "gimp" "obs-studio")
 lengthPackages=${#packagesToInstall[@]}
 
 if [ "$installUserPreference" == "n" ]; then
@@ -92,8 +98,11 @@ fi
 
 # Enable processes
 echo "+++++ Enable Processes +++++"
-processesToEnable=("bluetooth" "NetworkManager" "dhcpcd")
+processesToEnable=("bluetooth"
+                   "NetworkManager"
+                   "dhcpcd")
 lengthProcesses=${#processesToEnable[@]}
+
 for ((i=0; i<$lengthProcesses; i++)) do
     systemctl enable --now ${processesToEnable[$i]} 1> /dev/null 2>&1
     echo "${processesToEnable[$i]} enabled... "
@@ -171,7 +180,13 @@ for fileToUnzip in *.zip; do
 done
 echo -e "NerdFonts installed... \n"
 
-## TODO SETUP SCRIPTS IN THE COMMANDS FOLDER IN THE ".bashrc" with easy call
+## Setup aliases
+cd /home/$systemUsername
+aliasList=("")
+lengthAliasList=${#aliasList[@]}
+for ((i=0; i<lengthAliasList; i++)) do
+    echo ${aliasList[$i]} >> .bashrc
+done
 
 ## Setup yay
 read -p "Start yay installer? (Y/n) " installYay
