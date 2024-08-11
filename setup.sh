@@ -71,6 +71,7 @@ elif [ "$installUserPreference" == 'a' ]; then
         sleep 1
         clear
     done
+    clear
 
 else
     for ((i=0; i<$lengthPackages; i++)); do
@@ -85,8 +86,8 @@ else
             clear
         fi 
     done
+    clear
 fi
-
 
 
 # Enable processes
@@ -165,7 +166,7 @@ fi
 cd /home/$systemUsername/Downloads
 sudo -u $systemUsername wget "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/3270.zip" "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/NerdFontsSymbolsOnly.zip" "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/Ubuntu.zip" "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/Hack.zip" 1> /dev/null 2>&1
 for fileToUnzip in *.zip; do
-    sudo unzip -o "$fileToUnzip" -d /usr/share/fonts/ 1> /dev/null 2>&1
+    unzip -o "$fileToUnzip" -d /usr/share/fonts/ 1> /dev/null 2>&1
     rm "$fileToUnzip"
 done
 echo -e "NerdFonts installed... \n"
