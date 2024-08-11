@@ -56,144 +56,31 @@ clear
 
 ## User preference tools
 read -p "Start user preference tool installer? (Y'es/n'o/a'll)" installUserPreference
+packagesToInstall=("tmux" "yazi" "bashtop" "docker" "dbeaver" "man" "neovim" "git" "firefox" "torbrowser-launcher" "python" "python3" "nodejs" "jdk-openjdk" "gcc" "postgresql" "libreoffice" "audacity" "gimp" "obs-studio")
+lengthPackages=${#packagesToInstall[@]}
+
 if [ "$installUserPreference" == "n" ]; then
     echo -e "Skipping the user preference tool installer... \n"
 elif [ "$installUserPreference" == 'a' ]; then
     echo -e "Installing all default packages... \n"
-    packagesToInstall="tmux yazi bashtop docker dbeaver man neovim git firefox torbrowser-launcher python python3 nodejs jdk-openjdk gcc postgresql libreoffice audacity gimp obs-studio"
-    pacman -S $packagesToInstall
-    clear
+    for (i=0; i<$lengthPackages; i++); do
+        echo -e "\n" | pacman -S ${packagesToInstall[$i]}
+        echo "${packagesToInstall[$i]}"
+        sleep 1
+        clear
+    done
 else
-    ### TODO ADD THE POSSIBLITY TO SELECT BETWEEN A BUNCH OF PROGRAMS THAT DO THE SAME THING
-    # System
-    echo -e "\n%%%% System %%%%"
-    read -p "Install tmux? (y/N) " iTmux 
-    if [ "$iTmux" == "y" ]; then 
-       echo "" | pacman -S tmux
-       clear
-       echo "Tmux installed... "
-    fi
-    read -p "Install the file manager yazi? (y/N) " iYazi 
-    if [ "$iYazi" == "y" ]; then 
-       echo "" | pacman -S yazi
-       clear
-       echo "Yazi installed... "
-    fi
-    read -p "Install the system monitor bashtop? (y/N) " iBashtop
-    if [ "$iBashtop" == "y" ]; then 
-       echo "" | pacman -S bashtop
-       clear
-       echo "Bashtop installed... "
-    fi
+    for (i=0; i<$lengthPackages; i++); do
+        read -p "Install ${packagesToInstall[$i]}? (y/N) " temp
+        if [ "$temp" == "y" ]; then
+            echo -e "\n" | pacman -S ${packagesToInstall[$i]}
+            clear
 
-    # Development tools
-    echo -e "\n%%%% Development tools %%%%"
-    read -p "Install docker? (y/N) " iDocker 
-    if [ "$iDocker" == "y" ]; then 
-       echo "" | pacman -S docker
-       clear
-       echo "Docker installed... "
-    fi
-    read -p "Install dbeaver? (y/N) " iDbeaver
-    if [ "$iDbeaver" == "y" ]; then
-        echo -e "\n" | pacman -S dbeaver
-        clear
-        echo "Dbeaver installed... "
-    fi
-    read -p "Install man? (y/N) " iMan
-    if [ "$iMan" == "y" ]; then
-        echo -e "\n" | pacman -S man
-        clear
-        echo "Man installed... "
-    fi
-    read -p "Install neovim? (y/N) " iNvim
-    if [ "$iNvim" == "y" ]; then
-        echo "" | pacman -S neovim
-        clear
-        echo "Neovim installed... "
-    fi
-    read -p "Install git? (y/N) " iGit
-    if [ "$iGit" == "y" ]; then
-        echo "" | pacman -S git
-        clear
-        echo "Git installed... "
-    fi
-
-    # Browsers
-    echo -e "\n%%%% Browsers %%%%"
-    read -p "Install firefox? (y/N) " iFirefox
-    if [ "$iFirefox" == "y" ]; then
-        echo -e "\n" | pacman -S firefox
-        clear
-        echo "Firefox installed... "
-    fi
-    read -p "Install tor? (y/N) " iTor
-    if [ "$iTor" == "y" ]; then
-        echo "" | pacman -S torbrowser-launcher
-        clear
-        echo "Tor installed... "
-    fi
-
-    # Programming languages
-    echo -e "\n%%%% Programming languages %%%%"
-    read -p "Install python? (y/N) " iPython
-    if [ "$iPython" == "y" ]; then
-        echo "" | pacman -S python python3
-        clear
-        echo "Python installed... "
-    fi
-    read -p "Install nodejs? (y/N) " iNodejs
-    if [ "$iNodejs" == "y" ]; then
-        echo "" | pacman -S nodejs
-        clear
-        echo "Nodejs installed... "
-    fi
-    read -p "Install java? (y/N) " iJava
-    if [ "$iJava" == "y" ]; then
-        echo "" | pacman -S jdk-openjdk
-        clear
-        echo "Java installed... "
-    fi
-    read -p "Install C++? (y/N) " iCpp
-    if [ "$iCpp" == "y" ]; then
-        echo "" | pacman -S gcc
-        clear
-        echo "C++ installed... "
-    fi
-    read -p "Install postgresql? (y/N) " iPostgresql
-    if [ "$iPostgresql" == "y" ]; then
-        echo "" | pacman -S postgresql
-        clear
-        echo "PostgreSql installed... "
-    fi
-
-    # Ultilities
-    echo -e "\n%%%% Ultilities %%%%"
-    read -p "Install libreoffice suit? (y/N) " iLibreoffice
-    if [ "$iLibreoffice" == "y" ]; then
-        echo -e "\n" | pacman -S libreoffice
-        clear
-        echo "Libreoffice installed... "
-    fi
-    read -p "Install audacity? (y/N) " iAudacity
-    if [ "$iAudacity" == "y" ]; then
-        echo "" | pacman -S audacity
-        clear
-        echo "Audacity installed... "
-    fi
-    read -p "Install gimp? (y/N) " iGimp
-    if [ "$iGimp" == "y" ]; then
-        echo "" | pacman -S gimp
-        clear
-        echo "Gimp installed... "
-    fi   
-    read -p "Install obs studio? (y/N) " iObs
-    if [ "$iObs" == "y" ]; then
-        echo "" | pacman -S obs-studio
-        clear
-        echo "Obs studio installed... "
-    fi       
-    clear
+            echo "Obs studio installed... "
+            sleep 1
+            clear
+        fi 
+    done
 fi
 
 
