@@ -172,7 +172,6 @@ fi
 
 # Setup basic settings
 echo -e "+++++ Setup basic settings +++++"
-
 ## Setup nerd fonts
 echo "Setting up the nerdfonts... "
 cd /home/$systemUsername/Downloads
@@ -194,6 +193,7 @@ for ((i=0; i<lengthAliasList; i++)) do
     echo ${aliasList[$i]} >> .bashrc
     echo "${aliasList[$i]} - was installed... "
 done
+echo ""
 
 ## Setup yay
 read -p "Start yay installer? (Y/n) " installYay
