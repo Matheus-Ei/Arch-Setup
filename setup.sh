@@ -45,7 +45,7 @@ echo "" | pacman -S pulseaudio pulseaudio-alsa alsa-utils sudo networkmanager dh
 echo "System base packages installed... "
 
 ## Theme
-echo -e "\n" | pacman -S gnome-themes-extra hyprland gtk4 hyprpaper waybar wofi kitty egl-wayland 1> /dev/null 2>&1
+echo -e "\n" | pacman -S gnome-themes-extra hyprland gtk4 hyprpaper waybar wofi kitty egl-wayland pavucontrol 1> /dev/null 2>&1
 echo "Theme packages installed... "
 
 ## Basic tools 
