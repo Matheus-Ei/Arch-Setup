@@ -8,7 +8,6 @@ fi
 ## Has nvidia GPU
 read -p "Do you have a nvidia GPU? (y/N) " hasNvidia
 clear
-
 # Packages setup
 ## Pacman
 echo "The pacman setup is needed for the rest of the system to work! just skip if you already had done!"
@@ -40,7 +39,7 @@ if [ "$hasNvidia" == "y" ]; then
 fi
 
 ## System base packages
-echo "" | pacman -S pulseaudio pulseaudio-alsa pulseaudio-bluez alsa-utils sudo networkmanager dhcpcd bluez 1> /dev/null 2>&1
+echo "" | pacman -S pulseaudio pulseaudio-alsa pulseaudio-bluez alsa-utils sudo networkmanager dhcpcd bluez wget curl 1> /dev/null 2>&1
 echo "System base packages installed... "
 
 ## Theme
@@ -48,7 +47,7 @@ echo -e "\n" | pacman -S gnome-themes-extra hyprland gtk4 hyprpaper waybar wofi 
 echo "Theme packages installed... "
 
 ## Basic tools 
-echo "" | pacman -S git neovim wl-clipboard openssh base-devel 1> /dev/null 2>&1
+echo "" | pacman -S git neovim wl-clipboard openssh base-devel zip unzip 1> /dev/null 2>&1
 echo "Basic tools installed... "
 sleep 1
 clear
@@ -91,10 +90,15 @@ fi
 
 
 # Enable processes
-systemctl enable --now bluetooth NetworkManager dhcpcd 1> /dev/null 2>&1
-echo -e "Bluetooth and network enabled... \n"
-sleep 1
-
+echo "+++++ Enable Processes +++++"
+processesToEnable=("bluetooth" "NetworkManager" "dhcpcd")
+lengthProcesses=${#processesToEnable[@]}
+for ((i=0; i<$lengthProcesses; i++)) do
+    systemctl enable --now ${processesToEnable[$i]} 1> /dev/null 2>&1
+    echo "${processesToEnable[$i]} enabled... "
+    sleep 1
+done
+clear
 
 
 # System user setup
@@ -157,7 +161,14 @@ fi
 
 
 # Setup basic settings
-## TODO SETUP FONTS
+## Setup nerd fonts
+cd /home/$systemUsername/Downloads
+sudo -u $systemUsername wget "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/3270.zip" "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/NerdFontsSymbolsOnly.zip" "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/Ubuntu.zip" "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/Hack.zip" 1> /dev/null 2>&1
+for fileToUnzip in *.zip; do
+    sudo unzip -o "$fileToUnzip" -d /usr/share/fonts/ 1> /dev/null 2>&1
+    rm "$fileToUnzip"
+done
+echo -e "NerdFonts installed... \n"
 
 ## TODO SETUP SCRIPTS IN THE COMMANDS FOLDER IN THE ".bashrc" with easy call
 
@@ -308,6 +319,9 @@ else
     fi
 fi
 clear
+
+
+# TODO SETUP OF VIRTUAL MACHINES AUTOMATICALLY
 
 
 
