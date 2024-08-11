@@ -41,7 +41,7 @@ if [ "$hasNvidia" == "y" ]; then
 fi
 
 ## System base packages
-echo "" | pacman -S pulseaudio pulseaudio-alsa alsa-utils sudo networkmanager dhcpcd bluez wget curl 1> /dev/null 2>&1
+echo "" | pacman -S pulseaudio pulseaudio-alsa alsa-utils sudo networkmanager dhcpcd bluez wget curl go 1> /dev/null 2>&1
 echo "System base packages installed... "
 
 ## Theme
@@ -171,7 +171,10 @@ fi
 
 
 # Setup basic settings
+echo -e "+++++ Setup basic settings +++++"
+
 ## Setup nerd fonts
+echo "Setting up the nerdfonts... "
 cd /home/$systemUsername/Downloads
 sudo -u $systemUsername wget "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/3270.zip" "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/NerdFontsSymbolsOnly.zip" "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/Ubuntu.zip" "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/Hack.zip" 1> /dev/null 2>&1
 for fileToUnzip in *.zip; do
@@ -181,11 +184,15 @@ done
 echo -e "NerdFonts installed... \n"
 
 ## Setup aliases
+echo "Setting up the aliases... "
 cd /home/$systemUsername
-aliasList=("")
+aliasList=("alias mountEx='sudo mount /dev/sda1 /mnt/Extra'"
+           "alias vmarch='virsh snapshot-revert ArchLinux Clean; virsh start ArchLinux; sleep 1; remote-viewer -f spice://localhost:5900'")
 lengthAliasList=${#aliasList[@]}
+
 for ((i=0; i<lengthAliasList; i++)) do
     echo ${aliasList[$i]} >> .bashrc
+    echo "${aliasList[$i]} - was installed... "
 done
 
 ## Setup yay
@@ -235,8 +242,8 @@ else
     echo "Copy the following key to your git and add this to the ssh keys"
     cat /home/$systemUsername/.ssh/id_ed25519.pub
     read -p "Press enter when you finished... "
-    clear
 fi
+clear
 
 
 ## Nvim 
