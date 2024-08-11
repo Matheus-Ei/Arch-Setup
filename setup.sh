@@ -7,7 +7,7 @@ fi
 
 ## Has nvidia GPU
 read -p "Do you have a nvidia GPU? (y/N) " hasNvidia
-
+clear
 
 
 # Packages setup
@@ -17,7 +17,7 @@ echo "Edit the /etc/pacman.conf and uncomment the line"
 echo "====----------------------===="
 echo "ParallelDownloads = 5"
 echo "Edit the lines to include multilib repository"
-echo "====----------------------===="
+echo -e "====----------------------====\n"
 read -p "Press enter to go to the file... "
 nvim /etc/pacman.conf
 clear
@@ -26,7 +26,7 @@ clear
 echo "" | pacman -Sy  1> /dev/null 2>&1
 echo "Repository updated... "
 echo "" | pacman -Su  1> /dev/null 2>&1
-echo "System upgraded..."
+echo -e "System upgraded...\n"
 
 ## Nvidia GPU
 if [ "$hasNvidia" == "y" ]; then
@@ -50,10 +50,10 @@ clear
 ## User preference tools
 read -p "Start user preference tool installer? (Y/n) " installUserPreference
 if [ "$installUserPreference" == "n" ]; then
-    echo "Skipping the user preference tool installer... "
+    echo -e "Skipping the user preference tool installer... \n"
 else
     # Development tools
-    echo "%%%% Development tools %%%%"
+    echo -e "\n%%%% Development tools %%%%"
     read -p "Install docker? (y/N) " iDocker 
     if [ "$iDocker" == "y" ]; then 
        echo "" | pacman -S docker
@@ -86,7 +86,7 @@ else
     fi
 
     # Browsers
-    echo "%%%% Browsers %%%%"
+    echo -e "\n%%%% Browsers %%%%"
     read -p "Install firefox? (y/N) " iFirefox
     if [ "$iFirefox" == "y" ]; then
         echo -e "\n" | pacman -S firefox
@@ -101,7 +101,7 @@ else
     fi
 
     # Programming languages
-    echo "%%%% Programming languages %%%%"
+    echo -e "\n%%%% Programming languages %%%%"
     read -p "Install python? (y/N) " iPython
     if [ "$iPython" == "y" ]; then
         echo "" | pacman -S python python3
@@ -134,7 +134,7 @@ else
     fi
 
     # Ultilities
-    echo "%%%% Ultilities %%%%"
+    echo -e "\n%%%% Ultilities %%%%"
     read -p "Install libreoffice suit? (y/N) " iLibreoffice
     if [ "$iLibreoffice" == "y" ]; then
         echo -e "\n" | pacman -S libreoffice
@@ -147,8 +147,8 @@ else
         clear
         echo "Audacity installed... "
     fi
+    clear
 fi
-clear
 
 
 
@@ -158,23 +158,27 @@ read -p "What is your username? " systemUsername
 
 read -p "Setup new user? (Y/n) " setupUser
 if [ "$setupUser" == "n" ]; then
-    echo "Skipping the user setup... "
+    echo -e "Skipping the user setup... \n"
 else
     useradd -m -g users -G wheel,storage,power -s /bin/bash $systemUsername 1> /dev/null 2>&1
-    echo "User setup was concluded... " 
+    echo -e "User setup was concluded... \n"
 
-    read -p "Now set a password: " userPassword
-    read -p "Repeat the password: " repeatPassword
+    read -p "Now set a password: " -s userPassword
+    echo ""
+    read -p "Repeat the password: " -s repeatPassword
+    echo ""
 
     while [ $userPassword != $repeatPassword ]
     do
         echo "The passwords don't match... try again... "
-        read -p "Now set a password: " userPassword
-        read -p "Repeat the password: " repeatPassword
+        read -p "Set a password: " -s userPassword
+        echo ""
+        read -p "Repeat the password: " -s repeatPassword
+        echo ""
     done
 
     echo "$systemUsername:$userPassword" | sudo chpasswd
-    echo "Password setup was a success... "
+    echo -e "Password setup was a success... \n"
 
     read -p "Press enter when ready... "
     clear
@@ -183,7 +187,7 @@ fi
 ## Sudo Setup
 read -p "Setup sudo? (Y/n) " setupSudo
 if [ "$setupSudo" == "n" ]; then
-    echo "Skipping sudo setup... "
+    echo -e "Skipping sudo setup... \n"
 else
     echo "Now open /etc/sudoers and edit the line and remove the # before the line"
     echo "====----------------------===="
@@ -195,16 +199,15 @@ else
 fi
 
 ## Basic directiories
-echo "+++++ Setup basic directiories +++++"
+echo -e "+++++ Setup basic directiories +++++"
 read -p "Setup basic directiories? (Y/n) " setupBasicDirectories
 if [ "$setupBasicDirectories" == "n" ]; then
-    echo "Skipping basic directories setup... "
+    echo -e "Skipping basic directories setup... \n"
 else 
     cd /home/$systemUsername
     sudo -u $systemUsername mkdir Downloads Documents Pictures Commands Code .ssh .config
     clear
 fi
-clear
 
 
 
@@ -212,7 +215,7 @@ clear
 ## Setup yay
 read -p "Start yay installer? (Y/n) " installYay
 if [ "$installYay" == "n" ]; then
-    echo "Skipping the yay setup... "
+    echo -e "Skipping the yay setup... \n"
 else 
     echo "Setting up yay... "
     cd /home/$systemUsername/Downloads
@@ -222,37 +225,36 @@ else
     cd yay
     sudo -u $systemUsername makepkg -si
     clear
-    sleep 1
     echo "Yay installed... "
+    sleep 1
 
     cd /home/$systemUsername/Downloads
     rm -r yay
     clear
 fi
-clear
 
 
 ## Setup git
 echo "+++++ Setup git +++++"
 read -p "Setup git config? (Y/n) " setupGit
 if [ "$setupGit" == "n" ]; then
-    echo "Skipping git config setup... "
+    echo -e "Skipping git config setup... \n"
 else
     read -p "What is your git user? " gituser
     sudo -u $systemUsername git config --global user.name "$gituser"
-    echo "Git username setup was successful... "
+    echo -e "Git username setup was successful... \n"
 
     read -p "What is your git email? " gitmail
     sudo -u $systemUsername git config --global user.email "$gitmail"
-    echo "Git mail setup was successful... "
+    echo -e "Git mail setup was successful... \n"
 fi
 
 read -p "Setup ssh key on git? (Y/n) " setupSshKey
 if [ "$setupSshKey" == "n" ]; then
-    echo "Skipping the setup of the ssh key on git... "
+    echo -e "Skipping the setup of the ssh key on git... \n"
 else
     sudo -u $systemUsername ssh-keygen -t ed25519 -C "$gitmail" -f /home/$systemUsername/.ssh/id_ed25519 -N "" 1> /dev/null 2>&1
-    echo "The generation of the ssh key was a success... "
+    echo -e "The generation of the ssh key was a success... \n"
 
     echo "Copy the following key to your git and add this to the ssh keys"
     cat /home/$systemUsername/.ssh/id_ed25519.pub
@@ -264,21 +266,23 @@ fi
 ## Nvim 
 echo "+++++ Setup neovim +++++"
 read -p "Setup neovim? (Y/n) " setupNeovim
-if [ "$setupNeovim" == "n" ]; then echo "Skipping neovim setup... "
+if [ "$setupNeovim" == "n" ]; then 
+    echo -e "Skipping neovim setup... \n"
 else 
     sudo -u $systemUsername git clone https://github.com/Matheus-Ei/Nvim-Settings.git 1> /dev/null 2>&1
     echo "Cloning neovim settings repository... "
 
     mv Nvim-Settings /home/$systemUsername/.config/nvim
     echo "Neovim installed... "
+    clear
 fi
 
 
 ## Hyprland
-echo "+++++ Setup hyprland +++++"
+echo -e "+++++ Setup hyprland +++++\n"
 read -p "Setup hyprland? (Y/n) " setupHyrland
 if [ "$setupHyrland" == "n" ]; then
-    echo "Skipping hyprland setup... "
+    echo -e "Skipping hyprland setup... \n"
 else
     cd /home/$systemUsername/Downloads
     sudo -u $systemUsername git clone https://github.com/Matheus-Ei/Hyprland-Settings.git 1> /dev/null 2>&1
@@ -299,26 +303,21 @@ else
     echo "Edit the hypr/hyprland.conf file and change this line there with your monitors: "
     echo "====----------------------===="
     echo "monitor=MONITORPORT,preferred,0x0,auto"
-    echo "====----------------------===="
-    echo -e "\nYou can find your monitor or monitors ports here" 
-    echo "if you have more than 1 monitor, just add more than 1 line like the above"
+    echo -e "====----------------------====\n"
+    echo "You can find your monitor or monitors ports here" 
     sleep 1
     xrandr
-
     read -p "press enter when you are ready... "
     nvim hypr/hyprland.conf
     clear
    
-
     echo "Edit the hypr/hyprpaper.conf file and change this line to set your wallpaper: "
     echo "====----------------------===="
     echo "wallpaper = MONITORPORT,~/.config/hypr/wallpaper/wallpaper1.jpg"
-    echo "====----------------------===="
-    echo -e "\nYou can find your monitor or monitors ports here" 
-    echo "if you have more than 1 monitor, just add more than 1 line like the above"
+    echo -e "====----------------------====\n"
+    echo "You can find your monitor or monitors ports here" 
     sleep 1
     xrandr
-
     read -p "press enter when you are ready... "
     nvim hypr/hyprpaper.conf
     clear
@@ -326,11 +325,10 @@ else
     echo "Edit the waybar/config file and change this to set the width of your bar: "
     echo "====----------------------===="
     echo '"width": the_width_of_your_monitor'
-    echo "====----------------------===="
-    echo -e "\nYou can find the width of your monitor here" 
+    echo -e "====----------------------====\n"
+    echo "You can find the width of your monitor here" 
     sleep 1
     xrandr
-
     read -p "press enter when you are ready... "
     nvim waybar/config
     clear
@@ -357,7 +355,7 @@ else
         mkinitcpio -P
         clear
     else
-        echo "Skipping wayland nvidia setup... "
+        echo -e "Skipping wayland nvidia setup... \n"
     fi
 fi
 clear
