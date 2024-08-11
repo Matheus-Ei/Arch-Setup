@@ -12,15 +12,21 @@ clear
 
 # Packages setup
 ## Pacman
-echo "+++++ Setup pacman +++++"
-echo "Edit the /etc/pacman.conf and uncomment the line"
-echo "====----------------------===="
-echo "ParallelDownloads = 5"
-echo "Edit the lines to include multilib repository"
-echo -e "====----------------------====\n"
-read -p "Press enter to go to the file... "
-nvim /etc/pacman.conf
-clear
+echo "The pacman setup is needed for the rest of the system to work! just skip if you already had done!"
+read -p "Start pacman setup? (Y/n)" pacmanSetup
+if [ "$pacmanSetup" == "n" ]; then
+    echo -e "Skipping pacman setup... \n"
+else
+    echo "+++++ Setup pacman +++++"
+    echo "Edit the /etc/pacman.conf and uncomment the line"
+    echo "====----------------------===="
+    echo "ParallelDownloads = 5"
+    echo "Edit the lines to include multilib repository"
+    echo -e "====----------------------====\n"
+    read -p "Press enter to go to the file... "
+    nvim /etc/pacman.conf
+    clear
+fi
 
 ## Update the system
 echo "" | pacman -Sy  1> /dev/null 2>&1
@@ -35,23 +41,51 @@ if [ "$hasNvidia" == "y" ]; then
 fi
 
 ## System base packages
-echo "" | pacman -S pulseaudio pulseaudio-alsa alsa-utils sudo networkmanager dhcpcd 1> /dev/null 2>&1
+echo "" | pacman -S pulseaudio pulseaudio-alsa pulseaudio-bluez alsa-utils sudo networkmanager dhcpcd, bluez 1> /dev/null 2>&1
 echo "System base packages installed... "
 
 ## Theme
-echo -e "\n\n" | pacman -S gnome-themes-extra hyprland gtk4 hyprpaper waybar wofi kitty egl-wayland 1> /dev/null 2>&1
+echo -e "\n" | pacman -S gnome-themes-extra hyprland gtk4 hyprpaper waybar wofi kitty egl-wayland 1> /dev/null 2>&1
 echo "Theme packages installed... "
 
 ## Basic tools 
 echo "" | pacman -S git neovim wl-clipboard openssh base-devel 1> /dev/null 2>&1
 echo "Basic tools installed... "
+sleep 1
 clear
 
 ## User preference tools
-read -p "Start user preference tool installer? (Y/n) " installUserPreference
+read -p "Start user preference tool installer? (Y'es/n'o/a'll)" installUserPreference
 if [ "$installUserPreference" == "n" ]; then
     echo -e "Skipping the user preference tool installer... \n"
+elif [ "$installUserPreference" == 'a' ]; then
+    echo -e "Installing all default packages... \n"
+    packagesToInstall="tmux yazi bashtop docker dbeaver man neovim git firefox torbrowser-launcher python python3 nodejs jdk-openjdk gcc postgresql libreoffice audacity gimp obs-studio"
+    pacman -S $packagesToInstall
+    clear
 else
+    ### TODO ADD THE POSSIBLITY TO SELECT BETWEEN A BUNCH OF PROGRAMS THAT DO THE SAME THING
+    # System
+    echo -e "\n%%%% System %%%%"
+    read -p "Install tmux? (y/N) " iTmux 
+    if [ "$iTmux" == "y" ]; then 
+       echo "" | pacman -S tmux
+       clear
+       echo "Tmux installed... "
+    fi
+    read -p "Install the file manager yazi? (y/N) " iYazi 
+    if [ "$iYazi" == "y" ]; then 
+       echo "" | pacman -S yazi
+       clear
+       echo "Yazi installed... "
+    fi
+    read -p "Install the system monitor bashtop? (y/N) " iBashtop
+    if [ "$iBashtop" == "y" ]; then 
+       echo "" | pacman -S bashtop
+       clear
+       echo "Bashtop installed... "
+    fi
+
     # Development tools
     echo -e "\n%%%% Development tools %%%%"
     read -p "Install docker? (y/N) " iDocker 
@@ -147,12 +181,31 @@ else
         clear
         echo "Audacity installed... "
     fi
+    read -p "Install gimp? (y/N) " iGimp
+    if [ "$iGimp" == "y" ]; then
+        echo "" | pacman -S gimp
+        clear
+        echo "Gimp installed... "
+    fi   
+    read -p "Install obs studio? (y/N) " iObs
+    if [ "$iObs" == "y" ]; then
+        echo "" | pacman -S obs-studio
+        clear
+        echo "Obs studio installed... "
+    fi       
     clear
 fi
 
 
 
-# System User Setup
+# Enable processes
+systemctl enable --now bluetooth NetworkManager dhcpcd 1> /dev/null 2>&1
+echo -e "Bluetooth and network enabled... \n"
+sleep 1
+
+
+
+# System user setup
 echo "+++++ Setup system user +++++"
 read -p "What is your username? " systemUsername
 
@@ -212,6 +265,10 @@ fi
 
 
 # Setup basic settings
+## TODO SETUP FONTS
+
+## TODO SETUP SCRIPTS IN THE COMMANDS FOLDER IN THE ".bashrc" with easy call
+
 ## Setup yay
 read -p "Start yay installer? (Y/n) " installYay
 if [ "$installYay" == "n" ]; then
@@ -274,6 +331,7 @@ else
 
     mv Nvim-Settings /home/$systemUsername/.config/nvim
     echo "Neovim installed... "
+    sleep 1
     clear
 fi
 
