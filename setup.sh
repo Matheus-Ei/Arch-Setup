@@ -9,7 +9,6 @@ fi
 read -p "Do you have a nvidia GPU? (y/N) " hasNvidia
 clear
 
-
 # Packages setup
 ## Pacman
 echo "The pacman setup is needed for the rest of the system to work! just skip if you already had done!"
@@ -41,7 +40,7 @@ if [ "$hasNvidia" == "y" ]; then
 fi
 
 ## System base packages
-echo "" | pacman -S pulseaudio pulseaudio-alsa pulseaudio-bluez alsa-utils sudo networkmanager dhcpcd, bluez 1> /dev/null 2>&1
+echo "" | pacman -S pulseaudio pulseaudio-alsa pulseaudio-bluez alsa-utils sudo networkmanager dhcpcd bluez 1> /dev/null 2>&1
 echo "System base packages installed... "
 
 ## Theme
@@ -55,28 +54,34 @@ sleep 1
 clear
 
 ## User preference tools
-read -p "Start user preference tool installer? (Y'es/n'o/a'll)" installUserPreference
+read -p "Start user preference tool installer? (Y'es/n'o/a'll) " installUserPreference
 packagesToInstall=("tmux" "yazi" "bashtop" "docker" "dbeaver" "man" "neovim" "git" "firefox" "torbrowser-launcher" "python" "python3" "nodejs" "jdk-openjdk" "gcc" "postgresql" "libreoffice" "audacity" "gimp" "obs-studio")
 lengthPackages=${#packagesToInstall[@]}
 
 if [ "$installUserPreference" == "n" ]; then
     echo -e "Skipping the user preference tool installer... \n"
+
 elif [ "$installUserPreference" == 'a' ]; then
     echo -e "Installing all default packages... \n"
-    for (i=0; i<$lengthPackages; i++); do
+    for ((i=0; i<$lengthPackages; i++)); do
         echo -e "\n" | pacman -S ${packagesToInstall[$i]}
-        echo "${packagesToInstall[$i]}"
+        sleep 1
+        clear
+
+        echo "${packagesToInstall[$i]} Installed... "
         sleep 1
         clear
     done
+
 else
-    for (i=0; i<$lengthPackages; i++); do
+    for ((i=0; i<$lengthPackages; i++)); do
         read -p "Install ${packagesToInstall[$i]}? (y/N) " temp
         if [ "$temp" == "y" ]; then
             echo -e "\n" | pacman -S ${packagesToInstall[$i]}
+            sleep 1
             clear
 
-            echo "Obs studio installed... "
+            echo "${packagesToInstall[$i]} Installed... "
             sleep 1
             clear
         fi 
@@ -243,7 +248,6 @@ else
 
     ### Hyprland, waybar and hyprpaper setup
     cd /home/$systemUsername/.config/
-
     echo "+++++ Setup hyprland monitors +++++"
     echo "Edit the hypr/hyprland.conf file and change this line there with your monitors: "
     echo "====----------------------===="
