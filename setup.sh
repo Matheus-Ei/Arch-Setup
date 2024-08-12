@@ -10,6 +10,23 @@ read -p "Do you have a nvidia GPU? (y/N) " hasNvidia
 clear
 
 
+
+# Enable processes
+echo "+++++ Enable Processes +++++"
+processesToEnable=("bluetooth"
+                   "NetworkManager"
+                   "dhcpcd")
+lengthProcesses=${#processesToEnable[@]}
+
+for ((i=0; i<$lengthProcesses; i++)) do
+    systemctl enable --now ${processesToEnable[$i]} 1> /dev/null 2>&1
+    echo "${processesToEnable[$i]} enabled... "
+    sleep 1
+done
+clear
+
+
+
 # Packages setup
 ## Pacman
 echo "The pacman setup is needed for the rest of the system to work! just skip if you already had done!"
@@ -49,7 +66,7 @@ echo -e "\n" | pacman -S gnome-themes-extra hyprland gtk4 hyprpaper waybar wofi 
 echo "Theme packages installed... "
 
 ## Basic tools 
-echo "" | pacman -S git neovim wl-clipboard openssh base-devel zip unzip 1> /dev/null 2>&1
+echo "" | pacman -S wl-clipboard openssh base-devel zip unzip 1> /dev/null 2>&1
 echo "Basic tools installed... "
 sleep 1
 clear
@@ -95,20 +112,6 @@ else
     clear
 fi
 
-
-# Enable processes
-echo "+++++ Enable Processes +++++"
-processesToEnable=("bluetooth"
-                   "NetworkManager"
-                   "dhcpcd")
-lengthProcesses=${#processesToEnable[@]}
-
-for ((i=0; i<$lengthProcesses; i++)) do
-    systemctl enable --now ${processesToEnable[$i]} 1> /dev/null 2>&1
-    echo "${processesToEnable[$i]} enabled... "
-    sleep 1
-done
-clear
 
 
 # System user setup
@@ -182,11 +185,12 @@ for fileToUnzip in *.zip; do
 done
 echo -e "NerdFonts installed... \n"
 
+
 ## Setup aliases
 echo "Setting up the aliases... "
 cd /home/$systemUsername
 aliasList=("alias mountEx='sudo mount /dev/sda1 /mnt/Extra'"
-           "alias vmarch='virsh snapshot-revert ArchLinux Clean; virsh start ArchLinux; sleep 1; remote-viewer -f spice://localhost:5900'")
+           "alias vmArch='virsh snapshot-revert ArchLinux Clean; virsh start ArchLinux; sleep 1; remote-viewer -f spice://localhost:5900'")
 lengthAliasList=${#aliasList[@]}
 
 for ((i=0; i<lengthAliasList; i++)) do
@@ -194,6 +198,7 @@ for ((i=0; i<lengthAliasList; i++)) do
     echo "${aliasList[$i]} - was installed... "
 done
 echo ""
+
 
 ## Setup yay
 read -p "Start yay installer? (Y/n) " installYay
@@ -344,7 +349,54 @@ fi
 clear
 
 
-# TODO SETUP OF VIRTUAL MACHINES AUTOMATICALLY
+
+# Setup virtual machine manager KVM
+read -p "Setup the virtual machine manager KVM? (y/N) " setupKvm
+if [ "$setupKvm" == "y" ]; then
+    ## Install QEMU, libvirt, viewers and tools
+    echo "Installing QEMU, libvirt viewers and tools... "
+    echo -e "\n" | pacman -S qemu-full qemu-img libvirt virt-install virt-manager virt-viewer edk2-ovmf swtpm guestfs-tools libosinfo
+    echo -e "\nInstalling tuned with yay... "
+    sudo -u $systemUsername yay -S tuned
+    clear
+    
+    ## Enable monolithic daemon
+    systemctl enable --now libvirtd.service
+
+    ## Enable Iommu
+    echo "Now edit the /etc/default/grub and add these words in the GRUB_CMDLINE_LINUX: "
+    echo -e "====----------------------===="
+    echo "GRUB_CMDLINE_LINUX='... amd_iommu=on iommu=pt'"
+    echo -e "====----------------------====\n"
+    read -p "Press enter when you are ready... "
+    nvim /etc/default/grub
+    grub-mkconfig -o /boot/grub/grub.cfg
+
+    ## Enable SEV using GRUB
+    echo "options kvm_amd sev=1" >> /etc/modprobe.d/amd-sev.conf
+
+    ## Enable host with tuned
+    systemctl enable --now tuned.service
+    tuned-adm profile virtual-host
+
+    ## Add user to the libvirt group
+    usermod -aG libvirt $systemUsername
+
+    ## Set libvirt default uri
+    echo 'export LIBVIRT_DEFAULT_URI="qemu:///system"' >> ~/.bashrc
+    virsh uri
+
+    ## Change ACL permissions to the current user
+    setfacl -R -b /var/lib/libvirt/images/
+    setfacl -R -m u:${systemUsername}:rwX /var/lib/libvirt/images/
+    setfacl -m d:u:${systemUsername}:rwx /var/lib/libvirt/images/
+
+    echo -e "KVM virtual machine manager was installed... \n"
+    sleep 1
+    clear
+else
+    echo -e "Skipping KVM vitual machine setup... \n"
+fi
 
 
 
