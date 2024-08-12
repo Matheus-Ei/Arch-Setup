@@ -62,7 +62,7 @@ echo "" | pacman -S pulseaudio pulseaudio-alsa alsa-utils sudo networkmanager dh
 echo "System base packages installed... "
 
 ## Theme
-echo -e "\n" | pacman -S gnome-themes-extra hyprland gtk4 hyprpaper waybar wofi kitty egl-wayland pavucontrol 1> /dev/null 2>&1
+echo -e "\n" | pacman -S gnome-themes-extra hyprland gtk4 hyprpaper waybar wofi kitty egl-wayland pavucontrol hyprlock 1> /dev/null 2>&1
 echo "Theme packages installed... "
 
 ## Basic tools 
@@ -77,7 +77,7 @@ packagesToInstall=("tmux" "yazi" "bashtop"
                    "docker" "dbeaver" "man" "neovim" "git" "qbittorrent"
                    "firefox" "torbrowser-launcher"
                    "python" "python3" "nodejs" "jdk-openjdk" "gcc" "postgresql"
-                   "libreoffice" "audacity" "gimp" "obs-studio")
+                   "libreoffice" "audacity" "gimp" "obs-studio" "vlc" "loupe")
 lengthPackages=${#packagesToInstall[@]}
 
 if [ "$installUserPreference" == "n" ]; then
@@ -370,7 +370,10 @@ if [ "$setupKvm" == "y" ]; then
     echo -e "====----------------------====\n"
     read -p "Press enter when you are ready... "
     nvim /etc/default/grub
+    clear
+
     grub-mkconfig -o /boot/grub/grub.cfg
+    clear
 
     ## Enable SEV using GRUB
     echo "options kvm_amd sev=1" >> /etc/modprobe.d/amd-sev.conf
