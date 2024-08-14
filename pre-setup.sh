@@ -1,6 +1,5 @@
 #!/bin/bash
-echo "+++++ Load keys +++++"
-loadkeys br-abnt2
+echo "+++++ Load keys +++++" loadkeys br-abnt2
 
 
 echo "+++++ Setup disk partitions +++++"
@@ -45,31 +44,31 @@ echo "+++++ Generate fstab +++++"
 genfstab -U /mnt >> /mnt/etc/fstab
 
 
+arch-chroot /mnt /bin/bash <<EOF
 ## Locale generation
 echo "+++++ Locale Generation +++++"
-echo "en_US.UTF-8 UTF-8" >> /mnt/etc/locale.gen
+echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
 
 ## Setup of locale
 echo "+++++ Setup locale +++++"
-echo "LANG=en_US.UTF-8" > /mnt/etc/locale.conf
+echo "LANG=en_US.UTF-8" > /etc/locale.conf
 
 ## Setup keyboard
 echo "+++++ Setup keyboard +++++"
-echo "KEYMAP=br-abnt2" > /mnt/etc/vconsole.conf
+echo "KEYMAP=br-abnt2" > /etc/vconsole.conf
 
 ## Setup hostname
 echo "+++++ Setup hostname +++++"
 read -p "What hostname do you want to set? " hostname
-echo $hostname > /mnt/etc/hostname
+echo $hostname > /etc/hostname
 
 echo "+++++ Root password definition +++++"
 passwd
 
-
 echo "+++++ Grub installation and configuration +++++"
-grub-install --target=x86_64-efi --efi-directory=/mnt/boot --bootloader-id=GRUB
-grub-mkconfig -o /mnt/boot/grub/grub.cfg
+grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
+grub-mkconfig -o /boot/grub/grub.cfg
 
+EOF
 
-exit
 reboot
