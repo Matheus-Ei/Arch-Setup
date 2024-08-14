@@ -9,6 +9,10 @@ fi
 read -p "Do you have a nvidia GPU? (y/N) " hasNvidia
 clear
 
+## Some silent requisitions
+mkinitcpio -P 1> /dev/null 2>&1
+locale-gen 1> /dev/null 2>&1
+
 
 
 # Enable processes

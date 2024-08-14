@@ -44,45 +44,31 @@ pacstrap -K /mnt base linux linux-firmware neovim dhcpcd networkmanager grub efi
 echo "+++++ Generate fstab +++++"
 genfstab -U /mnt >> /mnt/etc/fstab
 
-echo "+++++ Chroot to /mnt +++++"
-arch-chroot /mnt
-
 
 ## Locale generation
 echo "+++++ Locale Generation +++++"
-echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
-locale-gen
-
-##Setup timeset
-echo "+++++ Setup timeset +++++"
-timedatectl set-timezone America/Sao_Paulo
+echo "en_US.UTF-8 UTF-8" >> /mnt/etc/locale.gen
 
 ## Setup of locale
 echo "+++++ Setup locale +++++"
-echo "LANG=en_US.UTF-8" > /etc/locale.conf
+echo "LANG=en_US.UTF-8" > /mnt/etc/locale.conf
 
 ## Setup keyboard
 echo "+++++ Setup keyboard +++++"
-echo "KEYMAP=br-abnt2" > /etc/vconsole.conf
+echo "KEYMAP=br-abnt2" > /mnt/etc/vconsole.conf
 
 ## Setup hostname
 echo "+++++ Setup hostname +++++"
 read -p "What hostname do you want to set? " hostname
-echo $hostname > /etc/hostname
-
-echo "+++++ Initramfs setup +++++"
-mkinitcpio -P
+echo $hostname > /mnt/etc/hostname
 
 echo "+++++ Root password definition +++++"
 passwd
 
-echo "+++++ Enable network +++++"
-systemctl enable NetworkManager dhcpcd
-
 
 echo "+++++ Grub installation and configuration +++++"
-grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
-grub-mkconfig -o /boot/grub/grub.cfg
+grub-install --target=x86_64-efi --efi-directory=/mnt/boot --bootloader-id=GRUB
+grub-mkconfig -o /mnt/boot/grub/grub.cfg
 
 
 exit
