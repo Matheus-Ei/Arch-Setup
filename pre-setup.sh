@@ -1,5 +1,6 @@
 #!/bin/bash
-echo "+++++ Load keys +++++" loadkeys br-abnt2
+echo "+++++ Load keys +++++" 
+loadkeys br-abnt2
 
 
 echo "+++++ Setup disk partitions +++++"
@@ -35,10 +36,12 @@ else
     mount --mkdir ${disk}1 /mnt/boot
     swapon ${disk}2
 fi
+clear
 
 
 echo "+++++ Install base packages +++++"
 pacstrap -K /mnt base linux linux-firmware neovim dhcpcd networkmanager grub efibootmgr git
+clear
 
 echo "+++++ Generate fstab +++++"
 genfstab -U /mnt >> /mnt/etc/fstab
@@ -52,6 +55,7 @@ echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
 ## Setup of locale
 echo "+++++ Setup locale +++++"
 echo "LANG=en_US.UTF-8" > /etc/locale.conf
+locale-gen
 
 ## Setup keyboard
 echo "+++++ Setup keyboard +++++"
@@ -61,6 +65,8 @@ echo "KEYMAP=br-abnt2" > /etc/vconsole.conf
 echo "+++++ Setup hostname +++++"
 read -p "What hostname do you want to set? " hostname
 echo $hostname > /etc/hostname
+
+mkinitcpio -P
 
 echo "+++++ Root password definition +++++"
 passwd
