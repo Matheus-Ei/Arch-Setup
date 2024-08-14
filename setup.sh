@@ -59,9 +59,7 @@ fi
 
 ## System base packages
 echo "" | pacman -S pulseaudio pulseaudio-alsa alsa-utils sudo networkmanager dhcpcd bluez wget curl go 1> /dev/null 2>&1
-echo "System base packages installed... "
-
-## Theme
+echo "System base packages installed... " ## Theme
 echo -e "\n" | pacman -S gnome-themes-extra hyprland gtk4 hyprpaper waybar wofi kitty egl-wayland pavucontrol hyprlock 1> /dev/null 2>&1
 echo "Theme packages installed... "
 
@@ -375,13 +373,15 @@ read -p "Setup the virtual machine manager KVM? (y/N) " setupKvm
 if [ "$setupKvm" == "y" ]; then
     ## Install QEMU, libvirt, viewers and tools
     echo "Installing QEMU, libvirt viewers and tools... "
-    echo -e "\n" | pacman -S qemu-full qemu-img libvirt virt-install virt-manager virt-viewer edk2-ovmf swtpm guestfs-tools libosinfo
+    echo -e "\n" | pacman -S qemu-full qemu-img libvirt virt-install virt-manager virt-viewer edk2-ovmf swtpm guestfs-tools libosinfo firewalld dnsmasq
+
     echo -e "\nInstalling tuned with yay... "
     sudo -u $systemUsername yay -S tuned
     clear
     
     ## Enable monolithic daemon
-    systemctl enable --now libvirtd.service
+    systemctl enable --now libvirtd.service firewalld
+    virsh net-autostart --network default
 
     ## Enable Iommu
     echo "Now edit the /etc/default/grub and add these words in the GRUB_CMDLINE_LINUX: "
