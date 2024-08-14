@@ -77,7 +77,8 @@ packagesToInstall=("tmux" "yazi" "bashtop"
                    "docker" "dbeaver" "man" "neovim" "git" "qbittorrent"
                    "firefox" "torbrowser-launcher"
                    "python" "python3" "nodejs" "jdk-openjdk" "gcc" "postgresql"
-                   "libreoffice" "audacity" "gimp" "obs-studio" "vlc" "loupe")
+                   "libreoffice" "audacity" "gimp" "obs-studio" "vlc" "loupe"
+                   "discord")
 lengthPackages=${#packagesToInstall[@]}
 
 if [ "$installUserPreference" == "n" ]; then
@@ -175,6 +176,10 @@ fi
 
 # Setup basic settings
 echo -e "+++++ Setup basic settings +++++"
+
+echo "Setting up the time... "
+timedatectl set-timezone America/Sao_Paulo
+
 ## Setup nerd fonts
 echo "Setting up the nerdfonts... "
 cd /home/$systemUsername/Downloads
@@ -186,19 +191,18 @@ done
 echo -e "NerdFonts installed... \n"
 
 
-## Setup aliases
-echo "Setting up the aliases... "
+## Setup .bashrc
+echo "Setting up .bashrc... "
 cd /home/$systemUsername
-aliasList=("alias mountEx='sudo mount /dev/sda1 /mnt/Extra'"
+commandList=("alias mountEx='sudo mount /dev/sda1 /mnt/Extra'"
            "alias vmArch='virsh snapshot-revert ArchLinux Clean; virsh start ArchLinux; sleep 1; remote-viewer -f spice://localhost:5900'")
-lengthAliasList=${#aliasList[@]}
+lengthCommandList=${#commandList[@]}
 
-for ((i=0; i<lengthAliasList; i++)) do
-    echo ${aliasList[$i]} >> .bashrc
-    echo "${aliasList[$i]} - was installed... "
+for ((i=0; i<lengthCommandList; i++)) do
+    echo ${commandList[$i]} >> .bashrc
+    echo "${commandList[$i]} - was installed... "
 done
 echo ""
-
 
 ## Setup yay
 read -p "Start yay installer? (Y/n) " installYay
@@ -218,6 +222,30 @@ else
 
     cd /home/$systemUsername/Downloads
     rm -r yay
+    clear
+fi
+
+## Aur packages installer
+read -p "Start aur packages installer? (Y/n) " installAurPackages
+aurPackagesToInstall=("google-chrome")
+lengthPackagesAur=${#aurPackagesToInstall[@]}
+
+if [ "$installAurPackages" == "n" ]; then
+    echo -e "Skipping the aur packages installer... \n"
+
+else
+    for ((i=0; i<$lengthPackagesAur; i++)); do
+        read -p "Install ${aurPackagesToInstall[$i]}? (y/N) " temp
+        if [ "$temp" == "y" ]; then
+            sudo -u systemUsername yay -S ${aurPackagesToInstall[$i]}
+            sleep 1
+            clear
+
+            echo "${aurPackagesToInstall[$i]} Installed... "
+            sleep 1
+            clear
+        fi 
+    done
     clear
 fi
 
@@ -287,6 +315,7 @@ else
 
     ### Hyprland, waybar and hyprpaper setup
     cd /home/$systemUsername/.config/
+    export DISPLAY=:0
     echo "+++++ Setup hyprland monitors +++++"
     echo "Edit the hypr/hyprland.conf file and change this line there with your monitors: "
     echo "====----------------------===="
@@ -294,29 +323,18 @@ else
     echo -e "====----------------------====\n"
     echo "You can find your monitor or monitors ports here" 
     sleep 1
-    xrandr
+    xrandr --listmonitors
     read -p "press enter when you are ready... "
     nvim hypr/hyprland.conf
     clear
    
-    echo "Edit the hypr/hyprpaper.conf file and change this line to set your wallpaper: "
-    echo "====----------------------===="
-    echo "wallpaper = MONITORPORT,~/.config/hypr/wallpaper/wallpaper1.jpg"
-    echo -e "====----------------------====\n"
-    echo "You can find your monitor or monitors ports here" 
-    sleep 1
-    xrandr
-    read -p "press enter when you are ready... "
-    nvim hypr/hyprpaper.conf
-    clear
-
     echo "Edit the waybar/config file and change this to set the width of your bar: "
     echo "====----------------------===="
     echo '"width": the_width_of_your_monitor'
     echo -e "====----------------------====\n"
     echo "You can find the width of your monitor here" 
     sleep 1
-    xrandr
+    xrandr --listmonitors
     read -p "press enter when you are ready... "
     nvim waybar/config
     clear
