@@ -44,7 +44,7 @@ echo "+++++ Generate fstab +++++"
 genfstab -U /mnt >> /mnt/etc/fstab
 
 
-arch-chroot /mnt /bin/bash <<EOF
+arch-chroot /mnt /bin/bash -c '
 ## Locale generation
 echo "+++++ Locale Generation +++++"
 echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
@@ -68,7 +68,6 @@ passwd
 echo "+++++ Grub installation and configuration +++++"
 grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
 grub-mkconfig -o /boot/grub/grub.cfg
-
-EOF
+'
 
 reboot
