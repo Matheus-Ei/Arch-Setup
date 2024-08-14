@@ -176,9 +176,9 @@ fi
 
 # Setup basic settings
 echo -e "+++++ Setup basic settings +++++"
-
-echo "Setting up the time... "
+echo "Setting up the time... \n"
 timedatectl set-timezone America/Sao_Paulo
+
 
 ## Setup nerd fonts
 echo "Setting up the nerdfonts... "
@@ -198,11 +198,12 @@ commandList=("alias mountEx='sudo mount /dev/sda1 /mnt/Extra'"
            "alias vmArch='virsh snapshot-revert ArchLinux Clean; virsh start ArchLinux; sleep 1; remote-viewer -f spice://localhost:5900'")
 lengthCommandList=${#commandList[@]}
 
-for ((i=0; i<lengthCommandList; i++)) do
+for ((i=0; i<$lengthCommandList; i++)) do
     echo ${commandList[$i]} >> .bashrc
     echo "${commandList[$i]} - was installed... "
 done
 echo ""
+
 
 ## Setup yay
 read -p "Start yay installer? (Y/n) " installYay
@@ -224,6 +225,7 @@ else
     rm -r yay
     clear
 fi
+
 
 ## Aur packages installer
 read -p "Start aur packages installer? (Y/n) " installAurPackages
@@ -264,7 +266,7 @@ else
     sudo -u $systemUsername git config --global user.email "$gitmail"
     echo -e "Git mail setup was successful... \n"
 fi
-
+### Setup ssh key
 read -p "Setup ssh key on git? (Y/n) " setupSshKey
 if [ "$setupSshKey" == "n" ]; then
     echo -e "Skipping the setup of the ssh key on git... \n"

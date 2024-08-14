@@ -30,20 +30,17 @@ Now you need to format the disk partitions that you will use to install arch lin
 - Efi: `mkfs.fat -F 32 /dev/efi-partition`
 - Root: `mkfs.ext4 /dev/root-partition`
 - Swap: `mkswap /dev/swap-partition`
-or just run the script `partitions.sh`
 
 ### Mount the disks
 And mount the disks with the following mounting table
 - Root: `mount /dev/root-partition /mnt`
 - Efi: `mount --mkdir /dev/efi-partition /mnt/boot`
 - Swap: `swapon /dev/swap-partition`
-or just run the script `partitions.sh`
 
 ### Install basic packages 
 Install the packages to make just arch linux work by itself with this command
 - `pacstrap -K /mnt base linux linux-firmware neovim dhcpcd networkmanager grub efibootmgr git`
 we will install on the /mnt, where /root-partition is mounted
-or just run the script `base-packages-install.sh`
 
 ### Generating fstab
 Generate the fstab is important to the system know how mount the disks on the system boot 
@@ -55,7 +52,7 @@ To go inside the system just run
 - `arch-chroot /mnt`
 
 ### File editions
-You can run the script `file-settings.sh` or you can do it manually by doing some file editions
+Here are some file editions that you need to do
 #### Generate the locale.gen
 1. Edit `/etc/locale.gen`
 2. Uncomment `en_US.UTF-8 UTF-8`
@@ -78,13 +75,11 @@ Set the root password with this command `passwd`
 ### Enable the network
 To enable the network you should run this command
 - `systemctl enable NetworkManager dhcpcd`
-or you can just run the script `enable-services.sh`
 
 ### Setup the boot loader
 Now there are two commands that you should run to set the bootloader
 1. `grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB`
 2. `grub-mkconfig -o /boot/grub/grub.cfg`
-or you can just run the script `grub-install.sh`
 
 ### Reboot the system
 Now just exit the chroot with the command `exit` and reboot the system with `reboot`
