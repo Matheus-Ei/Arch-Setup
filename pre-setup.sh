@@ -8,7 +8,7 @@ fdisk -l
 read -p "What is the disk that you want install the system? " disk
 
 echo "Setup disk partitions... "
-parted $disk mklabel efi
+parted $disk mklabel gpt
 sleep 3
 clear
 
@@ -33,28 +33,28 @@ if ( $disk == '/dev/nvme0n1' ); then
     mkfs.ext4 ${disk}p3
     mkfs.fat -F 32 ${disk}p1
     mkswap ${disk}p2
-    sleep 2
+    sleep 5
     clear
 
     echo "Mount the partitions... " 
     mount ${disk}p3 /mnt
     mount --mkdir ${disk}p1 /mnt/boot
     swapon ${disk}p2
-    sleep 2
+    sleep 5
     clear
 else
     echo "Format the partitions... "
     mkfs.ext4 ${disk}3
     mkfs.fat -F 32 ${disk}1
     mkswap ${disk}2
-    sleep 2
+    sleep 5
     clear
 
     echo "Mount the partitions... " 
     mount ${disk}3 /mnt
     mount --mkdir ${disk}1 /mnt/boot
     swapon ${disk}2
-    sleep 2
+    sleep 5
     clear
 fi
 clear
