@@ -28,7 +28,7 @@ parted $disk mkpart primary ext4 17GiB 100%
 sleep 3
 clear
 
-if ( $disk == '/dev/nvme0n1' ); then
+if [ "$disk" == "/dev/nvme0n1" ]; then
     echo "Format the partitions... "
     mkfs.ext4 ${disk}p3
     mkfs.fat -F 32 ${disk}p1
