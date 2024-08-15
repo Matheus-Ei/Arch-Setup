@@ -5,23 +5,27 @@ loadkeys br-abnt2
 
 echo "Setup disk partitions... "
 fdisk -l
-read -p "What is the disk that you want install the system?" disk
+read -p "What is the disk that you want install the system? " disk
 
-parted $disk mklabel gpt
-sleep 1
+echo "Setup disk partitions... "
+parted $disk mklabel efi
+sleep 3
 clear
 
+echo "Setup efi partition... "
 parted $disk mkpart primary fat32 1MiB 1GiB
 parted $disk set 1 esp on
-sleep 1
+sleep 3
 clear
 
+echo "Setup swap partition... "
 parted $disk mkpart primary linux-swap 1GiB 17GiB
-sleep 1
+sleep 3
 clear
 
+echo "Setup linux partition... "
 parted $disk mkpart primary ext4 17GiB 100%
-sleep 1
+sleep 3
 clear
 
 if ( $disk == '/dev/nvme0n1' ); then
