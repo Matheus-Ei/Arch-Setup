@@ -13,9 +13,11 @@ clear
 
 # Enable processes
 echo "+++++ Enable Processes +++++"
-processesToEnable=("bluetooth"
-                   "NetworkManager"
-                   "dhcpcd")
+processesToEnable=(
+    "bluetooth"
+    "NetworkManager"
+    "dhcpcd"
+)
 lengthProcesses=${#processesToEnable[@]}
 
 for ((i=0; i<$lengthProcesses; i++)) do
@@ -25,25 +27,24 @@ for ((i=0; i<$lengthProcesses; i++)) do
 done
 clear
 
+# Setup basic settings
+echo -e "+++++ Setup basic settings +++++"
+echo "Setting up the time... \n"
+timedatectl set-timezone America/Sao_Paulo
+
 
 
 # Packages setup
 ## Pacman
-echo "The pacman setup is needed for the rest of the system to work! just skip if you already had done!"
-read -p "Start pacman setup? (Y/n)" pacmanSetup
-if [ "$pacmanSetup" == "n" ]; then
-    echo -e "Skipping pacman setup... \n"
-else
-    echo "+++++ Setup pacman +++++"
-    echo "Edit the /etc/pacman.conf and uncomment the line"
-    echo "====----------------------===="
-    echo "ParallelDownloads = 5"
-    echo "Edit the lines to include multilib repository"
-    echo -e "====----------------------====\n"
-    read -p "Press enter to go to the file... "
-    nvim /etc/pacman.conf
-    clear
-fi
+echo "+++++ Setup pacman +++++"
+echo "Edit the /etc/pacman.conf and uncomment the line"
+echo "====----------------------===="
+echo "ParallelDownloads = 5"
+echo "Edit the lines to include multilib repository"
+echo -e "====----------------------====\n"
+read -p "Press enter to go to the file... "
+nvim /etc/pacman.conf
+clear
 
 ## Update the system
 echo "" | pacman -Sy  1> /dev/null 2>&1
@@ -71,12 +72,13 @@ clear
 
 ## User preference tools
 read -p "Start user preference tool installer? (Y'es/n'o/a'll) " installUserPreference
-packagesToInstall=("tmux" "yazi" "bashtop"
-                   "docker" "dbeaver" "man" "neovim" "git" "qbittorrent"
-                   "firefox" "torbrowser-launcher"
-                   "python" "python3" "nodejs" "jdk-openjdk" "gcc" "postgresql"
-                   "libreoffice" "audacity" "gimp" "obs-studio" "vlc" "loupe"
-                   "discord")
+packagesToInstall=(
+    "tmux" "yazi" "bashtop"
+    "docker" "dbeaver" "man" "neovim" "git" "qbittorrent"
+    "firefox" "torbrowser-launcher"
+    "python" "python3" "nodejs" "jdk-openjdk" "gcc" "postgresql"
+    "libreoffice" "audacity" "gimp" "obs-studio" "vlc" "loupe"
+)
 lengthPackages=${#packagesToInstall[@]}
 
 if [ "$installUserPreference" == "n" ]; then
@@ -117,65 +119,45 @@ fi
 echo "+++++ Setup system user +++++"
 read -p "What is your username? " systemUsername
 
-read -p "Setup new user? (Y/n) " setupUser
-if [ "$setupUser" == "n" ]; then
-    echo -e "Skipping the user setup... \n"
-else
-    useradd -m -g users -G wheel,storage,power -s /bin/bash $systemUsername 1> /dev/null 2>&1
-    echo -e "User setup was concluded... \n"
+useradd -m -g users -G wheel,storage,power -s /bin/bash $systemUsername 1> /dev/null 2>&1
+echo -e "User setup was concluded... \n"
 
-    read -p "Now set a password: " -s userPassword
+read -p "Now set a password: " -s userPassword
+echo ""
+read -p "Repeat the password: " -s repeatPassword
+echo ""
+
+while [ $userPassword != $repeatPassword ]
+do
+    echo "The passwords don't match... try again... "
+    read -p "Set a password: " -s userPassword
     echo ""
     read -p "Repeat the password: " -s repeatPassword
     echo ""
+done
 
-    while [ $userPassword != $repeatPassword ]
-    do
-        echo "The passwords don't match... try again... "
-        read -p "Set a password: " -s userPassword
-        echo ""
-        read -p "Repeat the password: " -s repeatPassword
-        echo ""
-    done
+echo "$systemUsername:$userPassword" | sudo chpasswd
+echo -e "Password setup was a success... \n"
 
-    echo "$systemUsername:$userPassword" | sudo chpasswd
-    echo -e "Password setup was a success... \n"
-
-    read -p "Press enter when ready... "
-    clear
-fi
+read -p "Press enter when ready... "
+clear
 
 ## Sudo Setup
-read -p "Setup sudo? (Y/n) " setupSudo
-if [ "$setupSudo" == "n" ]; then
-    echo -e "Skipping sudo setup... \n"
-else
-    echo "Now open /etc/sudoers and edit the line and remove the # before the line"
-    echo "====----------------------===="
-    echo "#%wheel ALL=(ALL:ALL) ALL"
-    echo -e "====----------------------====\n"
-    read -p "Press enter when ready... "
-    nvim /etc/sudoers
-    clear
-fi
+echo -e "+++++ Sudo settings +++++"
+echo "Now open /etc/sudoers and edit the line and remove the # before the line"
+echo "====----------------------===="
+echo "#%wheel ALL=(ALL:ALL) ALL"
+echo -e "====----------------------====\n"
+read -p "Press enter when ready... "
+nvim /etc/sudoers
+clear
 
 ## Basic directiories
 echo -e "+++++ Setup basic directiories +++++"
-read -p "Setup basic directiories? (Y/n) " setupBasicDirectories
-if [ "$setupBasicDirectories" == "n" ]; then
-    echo -e "Skipping basic directories setup... \n"
-else 
-    cd /home/$systemUsername
-    sudo -u $systemUsername mkdir Downloads Documents Pictures Commands Code .ssh .config
-    clear
-fi
+cd /home/$systemUsername
+sudo -u $systemUsername mkdir Downloads Documents Pictures Commands Code .ssh .config
+clear
 
-
-
-# Setup basic settings
-echo -e "+++++ Setup basic settings +++++"
-echo "Setting up the time... \n"
-timedatectl set-timezone America/Sao_Paulo
 
 
 ## Setup nerd fonts
@@ -192,8 +174,44 @@ echo -e "NerdFonts installed... \n"
 ## Setup .bashrc
 echo "Setting up .bashrc... "
 cd /home/$systemUsername
-commandList=("alias mountEx='sudo mount /dev/sda1 /mnt/Extra'"
-           "alias vmArch='virsh snapshot-revert ArchLinux Clean; virsh start ArchLinux; sleep 1; remote-viewer -f spice://localhost:5900'")
+commandList=(
+    "alias mountEx='sudo mount /dev/sda1 /mnt/Extra'"
+    "alias vma='virsh snapshot-revert ArchLinux Clean; virsh start ArchLinux; sleep 1; remote-viewer -f spice://localhost:5900'"
+    "alias ls='ls --color=auto'"
+    "alias grep='grep --color=auto'"
+    "alias cl='clear'"
+
+    "alias ..='cd ..'"
+    "alias ...='cd ../..'"
+    "alias ....='cd ../../..'"
+    "alias config='cd ~/.config/'"
+    "alias bashrc='nvim ~/.bashrc'"
+    "alias code='cd ~/Code'"
+
+    "alias gs='git status'"
+    "alias ga='git add .'"
+    "alias gc='git commit -m'"
+    "alias gp='git push'"
+    "alias gpl='git pull'"
+    "alias gw='git switch'"
+    "alias gwm='git switch main'"
+    "alias gl='git log --oneline --graph --decorate'"
+    "alias gd='git diff'"
+    "alias gds='git diff --staged'"
+
+    "alias dkc='docker system prune -a'"
+    "alias dcu='docker compose up'"
+    "alias dcd='docker compose down'"
+    "alias db='docker build .'"
+
+    "alias update='sudo pacman -Syu && yay -Syu --devel'"
+    "alias refresh='source ~/.bashrc'"
+
+    "export EDITOR=/usr/bin/nvim"
+    "PS1='\[\e[32m\]>> \[\e[34m\]\w \[\e[31m\]$\[\e[0m\] '"
+
+    "source /usr/share/git/completion/git-completion.bash"
+)
 lengthCommandList=${#commandList[@]}
 
 for ((i=0; i<$lengthCommandList; i++)) do
@@ -222,48 +240,46 @@ else
     cd /home/$systemUsername/Downloads
     rm -r yay
     clear
-fi
 
 
-## Aur packages installer
-read -p "Start aur packages installer? (Y/n) " installAurPackages
-aurPackagesToInstall=("google-chrome")
-lengthPackagesAur=${#aurPackagesToInstall[@]}
+    ## Aur packages installer
+    read -p "Start aur packages installer? (Y/n) " installAurPackages
+    aurPackagesToInstall=(
+        "google-chrome"
+    )
+    lengthPackagesAur=${#aurPackagesToInstall[@]}
 
-if [ "$installAurPackages" == "n" ]; then
-    echo -e "Skipping the aur packages installer... \n"
+    if [ "$installAurPackages" == "n" ]; then
+        echo -e "Skipping the aur packages installer... \n"
 
-else
-    for ((i=0; i<$lengthPackagesAur; i++)); do
-        read -p "Install ${aurPackagesToInstall[$i]}? (y/N) " temp
-        if [ "$temp" == "y" ]; then
-            sudo -u systemUsername yay -S ${aurPackagesToInstall[$i]}
-            sleep 1
-            clear
-
-            echo "${aurPackagesToInstall[$i]} Installed... "
-            sleep 1
-            clear
-        fi 
-    done
-    clear
+    else
+        for ((i=0; i<$lengthPackagesAur; i++)); do
+            read -p "Install ${aurPackagesToInstall[$i]}? (y/N) " temp
+            if [ "$temp" == "y" ]; then
+                sudo -u systemUsername yay -S ${aurPackagesToInstall[$i]}
+                sleep 1
+                clear
+    
+                echo "${aurPackagesToInstall[$i]} Installed... "
+                sleep 1
+                clear
+            fi 
+        done
+        clear
+    fi
 fi
 
 
 ## Setup git
 echo "+++++ Setup git +++++"
-read -p "Setup git config? (Y/n) " setupGit
-if [ "$setupGit" == "n" ]; then
-    echo -e "Skipping git config setup... \n"
-else
-    read -p "What is your git user? " gituser
-    sudo -u $systemUsername git config --global user.name "$gituser"
-    echo -e "Git username setup was successful... \n"
+read -p "What is your git user? " gituser
+sudo -u $systemUsername git config --global user.name "$gituser"
+echo -e "Git username setup was successful... \n"
 
-    read -p "What is your git email? " gitmail
-    sudo -u $systemUsername git config --global user.email "$gitmail"
-    echo -e "Git mail setup was successful... \n"
-fi
+read -p "What is your git email? " gitmail
+sudo -u $systemUsername git config --global user.email "$gitmail"
+echo -e "Git mail setup was successful... \n"
+
 ### Setup ssh key
 read -p "Setup ssh key on git? (Y/n) " setupSshKey
 if [ "$setupSshKey" == "n" ]; then
@@ -279,90 +295,75 @@ fi
 clear
 
 
-## Nvim 
-echo "+++++ Setup neovim +++++"
-read -p "Setup neovim? (Y/n) " setupNeovim
-if [ "$setupNeovim" == "n" ]; then 
-    echo -e "Skipping neovim setup... \n"
-else 
-    sudo -u $systemUsername git clone https://github.com/Matheus-Ei/Nvim-Settings.git 1> /dev/null 2>&1
-    echo "Cloning neovim settings repository... "
+## Workspace setup
+echo -e "+++++ Setup workspace +++++\n"
+cd /home/$systemUsername/Downloads
+sudo -u $systemUsername git clone https://github.com/Matheus-Ei/Hyprland-Settings.git 1> /dev/null 2>&1
+sudo -u $systemUsername git clone https://github.com/Matheus-Ei/Wofi-Settings.git 1> /dev/null 2>&1
+sudo -u $systemUsername git clone https://github.com/Matheus-Ei/Waybar-Settings.git 1> /dev/null 2>&1
+sudo -u $systemUsername git clone https://github.com/Matheus-Ei/Yazi-Settings.git 1> /dev/null 2>&1
+sudo -u $systemUsername git clone https://github.com/Matheus-Ei/Kitty-Settings.git 1> /dev/null 2>&1
+sudo -u $systemUsername git clone https://github.com/Matheus-Ei/Nvim-Settings.git 1> /dev/null 2>&1
+echo "Cloning settings repository... "
 
-    mv Nvim-Settings /home/$systemUsername/.config/nvim
-    echo "Neovim installed... "
-    sleep 1
-    clear
-fi
+mv Hyprland-Settings /home/$systemUsername/.config/hypr
+mv Wofi-Settings /home/$systemUsername/.config/wofi
+mv Waybar-Settings /home/$systemUsername/.config/waybar
+mv Yazi-Settings /home/$systemUsername/.config/yazi
+mv Kitty-Settings /home/$systemUsername/.config/kitty
+mv Nvim-Settings /home/$systemUsername/.config/nvim
+echo "The setup of the settings repos was a success... "
+clear
 
-
-## Hyprland
-echo -e "+++++ Setup hyprland +++++\n"
-read -p "Setup hyprland? (Y/n) " setupHyrland
-if [ "$setupHyrland" == "n" ]; then
-    echo -e "Skipping hyprland setup... \n"
-else
-    cd /home/$systemUsername/Downloads
-    sudo -u $systemUsername git clone https://github.com/Matheus-Ei/Hyprland-Settings.git 1> /dev/null 2>&1
-    echo "Cloning the hyprland settings repository... "
-
-    cd Hyprland-Settings
-    mv hypr waybar wofi /home/$systemUsername/.config/
-    echo "The setup of hyprland settings was a success... "
-
-    cd /home/$systemUsername/Downloads
-    rm -r Hyrland-Settings
-    clear
-
-    ### Hyprland, waybar and hyprpaper setup
-    cd /home/$systemUsername/.config/
-    export DISPLAY=:0
-    echo "+++++ Setup hyprland monitors +++++"
-    echo "Edit the hypr/hyprland.conf file and change this line there with your monitors: "
-    echo "====----------------------===="
-    echo "monitor=MONITORPORT,preferred,0x0,auto"
-    echo -e "====----------------------====\n"
-    echo "You can find your monitor or monitors ports here" 
-    sleep 1
-    xrandr --listmonitors
-    read -p "press enter when you are ready... "
-    nvim hypr/hyprland.conf
-    clear
+### Monitor setup
+cd /home/$systemUsername/.config/
+export DISPLAY=:0
+echo "+++++ Setup hyprland monitors +++++"
+echo "Edit the hypr/hyprland.conf file and change this line there with your monitors: "
+echo "====----------------------===="
+echo "monitor=MONITORPORT,preferred,0x0,auto"
+echo -e "====----------------------====\n"
+echo "You can find your monitor or monitors ports here" 
+sleep 1
+xrandr --listmonitors
+read -p "press enter when you are ready... "
+nvim hypr/hyprland.conf
+clear
    
-    echo "Edit the waybar/config file and change this to set the width of your bar: "
+echo "Edit the waybar/config file and change this to set the width of your bar: "
+echo "====----------------------===="
+echo '"width": the_width_of_your_monitor'
+echo -e "====----------------------====\n"
+echo "You can find the width of your monitor here" 
+sleep 1
+xrandr --listmonitors
+read -p "press enter when you are ready... "
+nvim waybar/config
+clear
+
+### Nvidia
+if [ "$hasNvidia" == "y" ]; then
+    echo "+++++ Setup nvidia for hyprland +++++"
+    echo "Edit the /etc/mkinitcpio.conf file and add this line there: "
     echo "====----------------------===="
-    echo '"width": the_width_of_your_monitor'
+    echo "MODULES=(... nvidia nvidia_modeset nvidia_uvm nvidia_drm ...)"
     echo -e "====----------------------====\n"
-    echo "You can find the width of your monitor here" 
-    sleep 1
-    xrandr --listmonitors
-    read -p "press enter when you are ready... "
-    nvim waybar/config
+    read -p "Press enter when you are ready... "
+    nvim /etc/mkinitcpio.conf
     clear
 
-    ### Nvidia
-    if [ "$hasNvidia" == "y" ]; then
-        echo "+++++ Setup nvidia for hyprland +++++"
-        echo "Edit the /etc/mkinitcpio.conf file and add this line there: "
-        echo "====----------------------===="
-        echo "MODULES=(... nvidia nvidia_modeset nvidia_uvm nvidia_drm ...)"
-        echo -e "====----------------------====\n"
-        read -p "Press enter when you are ready... "
-        nvim /etc/mkinitcpio.conf
-        clear
+    echo "Now edit the /etc/modprobe.d/nvidia.conf and add this line there: "
+    echo "====----------------------===="
+    echo "options nvidia_drm modeset=1 fbdev=1"
+    echo -e "====----------------------====\n"
+    read -p "Press enter when you are ready... "
+    nvim /etc/modprobe.d/nvidia.conf
+    clear
 
-        echo "Now edit the /etc/modprobe.d/nvidia.conf and add this line there: "
-        echo "====----------------------===="
-        echo "options nvidia_drm modeset=1 fbdev=1"
-        echo -e "====----------------------====\n"
-        read -p "Press enter when you are ready... "
-        nvim /etc/modprobe.d/nvidia.conf
-        clear
-
-        mkinitcpio -P
-        clear
-    else
-        echo -e "Skipping wayland nvidia setup... \n"
-    fi
+    mkinitcpio -P
+    clear
+else
+    echo -e "Skipping wayland nvidia setup... \n"
 fi
 clear
 
