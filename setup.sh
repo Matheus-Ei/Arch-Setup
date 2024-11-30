@@ -1,6 +1,7 @@
 #!/bin/bash
 
-echo "Run this program as root"
+clear
+echo -e "\e[1;32mRun this program as root\e[0m"
 read -p "Start the installation? (Y/n) " startInstall
 if [[ "$startInstall" == "n" || "$startInstall" == "N" ]]; then
     exit
@@ -10,26 +11,26 @@ fi
 read -p "Do you have a nvidia GPU? (y/N) " hasNvidia
 
 # Enable processes
-echo "+++++ Enable Processes +++++"
+echo -e "\n\e[1;34m+++++ Enable Processes +++++\e[0m"
 processesToEnable=(
-    "bluetooth"
     "NetworkManager"
     "dhcpcd"
 )
 for process in "${processesToEnable[@]}"; do
     systemctl enable --now "$process" 1> /dev/null
-    echo "$process enabled..."
+    echo -e "\e[1;32m$process enabled...\e[0m"
     sleep 1
 done
 
 # Setup basic settings
-echo -e "+++++ Setup basic settings +++++"
+echo -e "\n\e[1;34m+++++ Setup basic settings +++++\e[0m"
 echo "Setting up the time... \n"
 timedatectl set-timezone America/Sao_Paulo
+clear
 
 # Packages setup
 ## Pacman
-echo "+++++ Setup pacman +++++"
+echo -e "\n\e[1;34m+++++ Setup pacman +++++\e[0m"
 echo "Edit the /etc/pacman.conf and uncomment the line"
 echo "====----------------------===="
 echo "ParallelDownloads = 5"
@@ -37,31 +38,33 @@ echo "Edit the lines to include multilib repository"
 echo -e "====----------------------====\n"
 read -p "Press enter to go to the file... "
 nvim /etc/pacman.conf
+clear
 
 ## Update the system
 echo "" | pacman -Sy 1> /dev/null
-echo "Repository updated..."
+echo -e "\e[1;32mRepository updated...\e[0m"
 echo "" | pacman -Su 1> /dev/null
-echo -e "System upgraded...\n"
+echo -e "\e[1;32mSystem upgraded...\e[0m\n"
 
 ## Nvidia GPU
 if [[ "$hasNvidia" == "y" || "$hasNvidia" == "Y" ]]; then
     echo -e "\n" | pacman -S nvidia nvidia-utils lib32-nvidia-utils 1> /dev/null
-    echo "Nvidia packages installed..."
+    echo -e "\e[1;32mNvidia packages installed...\e[0m"
 fi
 
 ## System base packages
 pacman -S --noconfirm pulseaudio pulseaudio-alsa alsa-utils sudo networkmanager dhcpcd bluez wget curl go 1> /dev/null
-echo "System base packages installed..."
+echo -e "\e[1;32mSystem base packages installed...\e[0m"
 
 ## Theme
 pacman -S --noconfirm gnome-themes-extra hyprland gtk4 hyprpaper waybar wofi kitty egl-wayland pavucontrol hyprlock 1> /dev/null
-echo "Theme packages installed..."
+echo -e "\e[1;32mTheme packages installed...\e[0m"
 
 ## Basic tools
 pacman -S --noconfirm wl-clipboard openssh base-devel zip unzip 1> /dev/null
-echo "Basic tools installed..."
+echo -e "\e[1;32mBasic tools installed...\e[0m"
 sleep 1
+clear
 
 ## User preference tools
 read -p "Start user preference tool installer? (Y'es/n'o/a'll) " installUserPreference
@@ -73,28 +76,30 @@ packagesToInstall=(
     "libreoffice" "audacity" "gimp" "obs-studio" "vlc" "loupe"
 )
 if [[ "$installUserPreference" == "n" || "$installUserPreference" == "N" ]]; then
-    echo -e "Skipping the user preference tool installer... \n"
+    echo -e "\e[1;33mSkipping the user preference tool installer...\e[0m\n"
 elif [[ "$installUserPreference" == "a" || "$installUserPreference" == "A" ]]; then
-    echo -e "Installing all default packages... \n"
+    echo -e "\e[1;32mInstalling all default packages...\e[0m\n"
     pacman -S --noconfirm "${packagesToInstall[@]}" 1> /dev/null
-    echo "All user preference packages installed..."
+    clear
+    echo -e "\e[1;32mAll user preference packages installed...\e[0m"
 else
     for pkg in "${packagesToInstall[@]}"; do
         read -p "Install $pkg? (y/N) " temp
         if [[ "$temp" == "y" || "$temp" == "Y" ]]; then
             pacman -S --noconfirm "$pkg" 1> /dev/null
-            echo "$pkg Installed..."
+            echo -e "\e[1;32m$pkg Installed...\e[0m"
+            clear
             sleep 1
         fi
     done
 fi
 
 # System user setup
-echo "+++++ Setup system user +++++"
+echo -e "\n\e[1;34m+++++ Setup system user +++++\e[0m"
 read -p "What is your username? " systemUsername
 
 useradd -m -g users -G wheel,storage,power -s /bin/bash "$systemUsername" 1> /dev/null
-echo -e "User setup was concluded... \n"
+echo -e "\e[1;32mUser setup was concluded...\e[0m\n"
 
 read -p "Now set a password: " -s userPassword
 echo ""
@@ -102,7 +107,7 @@ read -p "Repeat the password: " -s repeatPassword
 echo ""
 
 while [[ "$userPassword" != "$repeatPassword" ]]; do
-    echo "The passwords don't match... try again..."
+    echo -e "\e[1;31mThe passwords don't match... try again...\e[0m"
     read -p "Set a password: " -s userPassword
     echo ""
     read -p "Repeat the password: " -s repeatPassword
@@ -110,36 +115,38 @@ while [[ "$userPassword" != "$repeatPassword" ]]; do
 done
 
 echo "$systemUsername:$userPassword" | sudo chpasswd
-echo -e "Password setup was a success... \n"
+echo -e "\e[1;32mPassword setup was a success...\e[0m\n"
 
 read -p "Press enter when ready... "
 
 ## Sudo Setup
-echo -e "+++++ Sudo settings +++++"
+echo -e "\n\e[1;34m+++++ Sudo settings +++++\e[0m"
 echo "Now open /etc/sudoers and edit the line and remove the # before the line"
 echo "====----------------------===="
 echo "#%wheel ALL=(ALL:ALL) ALL"
 echo -e "====----------------------====\n"
 read -p "Press enter when ready... "
 nvim /etc/sudoers
+clear
 
 ## Basic directories
-echo -e "+++++ Setup basic directories +++++"
+echo -e "\n\e[1;34m+++++ Setup basic directories +++++\e[0m"
 cd /home/"$systemUsername"
 sudo -u "$systemUsername" mkdir Downloads Documents Pictures Commands Code .ssh .config
 
 ## Setup nerd fonts
-echo "Setting up the nerd fonts... "
+echo -e "\n\e[1;34mSetting up the nerd fonts... \e[0m"
 cd /home/"$systemUsername"/Downloads
 sudo -u "$systemUsername" wget -q "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/3270.zip" "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/NerdFontsSymbolsOnly.zip" "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/Ubuntu.zip" "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/Hack.zip"
 for fileToUnzip in *.zip; do
     unzip -o "$fileToUnzip" -d /usr/share/fonts/ 1> /dev/null
     rm "$fileToUnzip"
 done
-echo -e "NerdFonts installed... \n"
+echo -e "\e[1;32mNerdFonts installed...\e[0m\n"
+clear
 
 ## Setup .bashrc
-echo "Setting up .bashrc... "
+echo -e "\n\e[1;34mSetting up .bashrc... \e[0m"
 cd /home/"$systemUsername"
 commandList=(
     "alias mountEx='sudo mount /dev/sda1 /mnt/Extra'"
@@ -176,23 +183,27 @@ commandList=(
 
 for cmd in "${commandList[@]}"; do
     echo "$cmd" >> .bashrc
-    echo "$cmd - was installed..."
+    echo -e "\e[1;32m$cmd - was installed...\e[0m"
+    sleep 1
+    clear
 done
 echo ""
 
 ## Setup yay
 read -p "Start yay installer? (Y/n) " installYay
 if [[ "$installYay" == "n" || "$installYay" == "N" ]]; then
-    echo -e "Skipping the yay setup... \n"
+    echo -e "\e[1;33mSkipping the yay setup...\e[0m\n"
 else
-    echo "Setting up yay... "
+    echo -e "\n\e[1;34mSetting up yay... \e[0m"
     cd /home/"$systemUsername"/Downloads
     sudo -u "$systemUsername" git clone https://aur.archlinux.org/yay.git 1> /dev/null
-    echo "Yay repository cloned... "
+    clear
+    echo -e "\e[1;32mYay repository cloned...\e[0m "
 
     cd yay
     sudo -u "$systemUsername" makepkg -si 1> /dev/null
-    echo "Yay installed... "
+    clear
+    echo -e "\e[1;32mYay installed...\e[0m"
     sleep 1
 
     cd /home/"$systemUsername"/Downloads
@@ -205,44 +216,46 @@ else
     )
 
     if [[ "$installAurPackages" == "n" || "$installAurPackages" == "N" ]]; then
-        echo -e "Skipping the aur packages installer... \n"
+        echo -e "\e[1;33mSkipping the aur packages installer...\e[0m\n"
     else
         for pkg in "${aurPackagesToInstall[@]}"; do
             read -p "Install $pkg? (y/N) " temp
             if [[ "$temp" == "y" || "$temp" == "Y" ]]; then
                 sudo -u "$systemUsername" yay -S "$pkg"
-                echo "$pkg Installed..."
+                echo -e "\e[1;32m$pkg Installed...\e[0m"
                 sleep 1
+                clear
             fi
         done
     fi
 fi
 
 ## Setup git
-echo "+++++ Setup git +++++"
+echo -e "\n\e[1;34m+++++ Setup git +++++\e[0m"
 read -p "What is your git user? " gituser
 sudo -u "$systemUsername" git config --global user.name "$gituser"
-echo -e "Git username setup was successful... \n"
+echo -e "\e[1;32mGit username setup was successful...\e[0m\n"
 
 read -p "What is your git email? " gitmail
 sudo -u "$systemUsername" git config --global user.email "$gitmail"
-echo -e "Git mail setup was successful... \n"
+echo -e "\e[1;32mGit mail setup was successful...\e[0m\n"
 
 ### Setup ssh key
 read -p "Setup ssh key on git? (Y/n) " setupSshKey
 if [[ "$setupSshKey" == "n" || "$setupSshKey" == "N" ]]; then
-    echo -e "Skipping the setup of the ssh key on git... \n"
+    echo -e "\e[1;33mSkipping the setup of the ssh key on git...\e[0m\n"
 else
     sudo -u "$systemUsername" ssh-keygen -t ed25519 -C "$gitmail" -f /home/"$systemUsername"/.ssh/id_ed25519 -N "" 1> /dev/null
-    echo -e "The generation of the ssh key was a success... \n"
+    echo -e "\e[1;32mThe generation of the ssh key was a success...\e[0m\n"
 
     echo "Copy the following key to your git and add this to the ssh keys"
     cat /home/"$systemUsername"/.ssh/id_ed25519.pub
     read -p "Press enter when you finished... "
+    clear
 fi
 
 ## Workspace setup
-echo -e "+++++ Setup workspace +++++\n"
+echo -e "\n\e[1;34m+++++ Setup workspace +++++\e[0m\n"
 cd /home/"$systemUsername"/Downloads
 sudo -u "$systemUsername" git clone https://github.com/Matheus-Ei/Hyprland-Settings.git 1> /dev/null
 sudo -u "$systemUsername" git clone https://github.com/Matheus-Ei/Wofi-Settings.git 1> /dev/null
@@ -250,7 +263,8 @@ sudo -u "$systemUsername" git clone https://github.com/Matheus-Ei/Waybar-Setting
 sudo -u "$systemUsername" git clone https://github.com/Matheus-Ei/Yazi-Settings.git 1> /dev/null
 sudo -u "$systemUsername" git clone https://github.com/Matheus-Ei/Kitty-Settings.git 1> /dev/null
 sudo -u "$systemUsername" git clone https://github.com/Matheus-Ei/Nvim-Settings.git 1> /dev/null
-echo "Cloning settings repository..."
+clear
+echo -e "\e[1;32mCloning settings repository...\e[0m"
 
 mv Hyprland-Settings /home/"$systemUsername"/.config/hypr
 mv Wofi-Settings /home/"$systemUsername"/.config/wofi
@@ -258,12 +272,13 @@ mv Waybar-Settings /home/"$systemUsername"/.config/waybar
 mv Yazi-Settings /home/"$systemUsername"/.config/yazi
 mv Kitty-Settings /home/"$systemUsername"/.config/kitty
 mv Nvim-Settings /home/"$systemUsername"/.config/nvim
-echo "The setup of the settings repos was a success..."
+clear
+echo -e "\e[1;32mThe setup of the settings repos was a success...\e[0m"
 
 ### Monitor setup
 cd /home/"$systemUsername"/.config/
 export DISPLAY=:0
-echo "+++++ Setup hyprland monitors +++++"
+echo -e "\n\e[1;34m+++++ Setup hyprland monitors +++++\e[0m"
 echo "Edit the hypr/hyprland.conf file and change this line there with your monitors: "
 echo "====----------------------===="
 echo "monitor=MONITORPORT,preferred,0x0,auto"
@@ -273,6 +288,7 @@ sleep 1
 xrandr --listmonitors
 read -p "Press enter when you are ready... "
 nvim hypr/hyprland.conf
+clear
 
 echo "Edit the waybar/config file and change this to set the width of your bar: "
 echo "====----------------------===="
@@ -283,16 +299,18 @@ sleep 1
 xrandr --listmonitors
 read -p "Press enter when you are ready... "
 nvim waybar/config
+clear
 
 ### Nvidia setup
 if [[ "$hasNvidia" == "y" || "$hasNvidia" == "Y" ]]; then
-    echo "+++++ Setup nvidia for hyprland +++++"
+    echo -e "\n\e[1;34m+++++ Setup nvidia for hyprland +++++\e[0m"
     echo "Edit the /etc/mkinitcpio.conf file and add this line there: "
     echo "====----------------------===="
     echo "MODULES=(... nvidia nvidia_modeset nvidia_uvm nvidia_drm ...)"
     echo -e "====----------------------====\n"
     read -p "Press enter when you are ready... "
     nvim /etc/mkinitcpio.conf
+    clear
 
     echo "Now edit the /etc/modprobe.d/nvidia.conf and add this line there: "
     echo "====----------------------===="
@@ -300,6 +318,7 @@ if [[ "$hasNvidia" == "y" || "$hasNvidia" == "Y" ]]; then
     echo -e "====----------------------====\n"
     read -p "Press enter when you are ready... "
     nvim /etc/modprobe.d/nvidia.conf
+    clear
 
     mkinitcpio -P
 else
@@ -310,11 +329,13 @@ fi
 read -p "Setup the virtual machine manager KVM? (y/N) " setupKvm
 if [[ "$setupKvm" == "y" || "$setupKvm" == "Y" ]]; then
     ## Install QEMU, libvirt, viewers and tools
-    echo "Installing QEMU, libvirt viewers and tools... "
+    echo -e "\n\e[1;34mInstalling QEMU, libvirt viewers and tools... \e[0m"
     pacman -S --noconfirm qemu-full qemu-img libvirt virt-install virt-manager virt-viewer edk2-ovmf swtpm guestfs-tools libosinfo firewalld dnsmasq
+    clear
 
     echo -e "\nInstalling tuned with yay... "
     sudo -u "$systemUsername" yay -S tuned
+    clear
     
     ## Enable monolithic daemon
     systemctl enable --now libvirtd.service firewalld
@@ -327,8 +348,10 @@ if [[ "$setupKvm" == "y" || "$setupKvm" == "Y" ]]; then
     echo -e "====----------------------====\n"
     read -p "Press enter when you are ready... "
     nvim /etc/default/grub
+    clear
 
     grub-mkconfig -o /boot/grub/grub.cfg
+    clear
 
     ## Enable SEV using GRUB
     echo "options kvm_amd sev=1" >> /etc/modprobe.d/amd-sev.conf
@@ -349,10 +372,11 @@ if [[ "$setupKvm" == "y" || "$setupKvm" == "Y" ]]; then
     setfacl -R -m u:"$systemUsername":rwX /var/lib/libvirt/images/
     setfacl -m d:u:"$systemUsername":rwx /var/lib/libvirt/images/
 
-    echo -e "KVM virtual machine manager was installed... \n"
+    clear
+    echo -e "\e[1;32mKVM virtual machine manager was installed...\e[0m\n"
     sleep 1
 else
-    echo -e "Skipping KVM virtual machine setup... \n"
+    echo -e "\e[1;33mSkipping KVM virtual machine setup...\e[0m\n"
 fi
 
 read -p "Press enter to reboot the system... "
