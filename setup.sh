@@ -9,6 +9,7 @@ fi
 
 ## Has Nvidia GPU
 read -p "Do you have a nvidia GPU? (y/N) " hasNvidia
+clear
 
 # Enable processes
 echo -e "\n\e[1;34m+++++ Enable Processes +++++\e[0m"
@@ -17,10 +18,11 @@ processesToEnable=(
     "dhcpcd"
 )
 for process in "${processesToEnable[@]}"; do
-    systemctl enable --now "$process" 1> /dev/null
+    systemctl enable --now "$process" 1> /dev/null 2>&1
     echo -e "\e[1;32m$process enabled...\e[0m"
     sleep 1
 done
+clear
 
 # Setup basic settings
 echo -e "\n\e[1;34m+++++ Setup basic settings +++++\e[0m"
@@ -41,27 +43,28 @@ nvim /etc/pacman.conf
 clear
 
 ## Update the system
-echo "" | pacman -Sy 1> /dev/null
+pacman -Sy --noconfirm 1> /dev/null 2>&1
 echo -e "\e[1;32mRepository updated...\e[0m"
-echo "" | pacman -Su 1> /dev/null
+pacman -Su --noconfirm 1> /dev/null 2>&1
 echo -e "\e[1;32mSystem upgraded...\e[0m\n"
+clear
 
 ## Nvidia GPU
 if [[ "$hasNvidia" == "y" || "$hasNvidia" == "Y" ]]; then
-    echo -e "\n" | pacman -S nvidia nvidia-utils lib32-nvidia-utils 1> /dev/null
+    echo -e "\n" | pacman -S nvidia nvidia-utils lib32-nvidia-utils 1> /dev/null 2>&1
     echo -e "\e[1;32mNvidia packages installed...\e[0m"
 fi
 
 ## System base packages
-pacman -S --noconfirm pulseaudio pulseaudio-alsa alsa-utils sudo networkmanager dhcpcd bluez wget curl go 1> /dev/null
+pacman -S --noconfirm pulseaudio pulseaudio-alsa alsa-utils sudo networkmanager dhcpcd bluez wget curl go 1> /dev/null 2>&1
 echo -e "\e[1;32mSystem base packages installed...\e[0m"
 
 ## Theme
-pacman -S --noconfirm gnome-themes-extra hyprland gtk4 hyprpaper waybar wofi kitty egl-wayland pavucontrol hyprlock 1> /dev/null
+pacman -S --noconfirm gnome-themes-extra hyprland gtk4 hyprpaper waybar wofi kitty egl-wayland pavucontrol hyprlock 1> /dev/null 2>&1
 echo -e "\e[1;32mTheme packages installed...\e[0m"
 
 ## Basic tools
-pacman -S --noconfirm wl-clipboard openssh base-devel zip unzip 1> /dev/null
+pacman -S --noconfirm wl-clipboard openssh base-devel zip unzip 1> /dev/null 2>&1
 echo -e "\e[1;32mBasic tools installed...\e[0m"
 sleep 1
 clear
@@ -79,14 +82,14 @@ if [[ "$installUserPreference" == "n" || "$installUserPreference" == "N" ]]; the
     echo -e "\e[1;33mSkipping the user preference tool installer...\e[0m\n"
 elif [[ "$installUserPreference" == "a" || "$installUserPreference" == "A" ]]; then
     echo -e "\e[1;32mInstalling all default packages...\e[0m\n"
-    pacman -S --noconfirm "${packagesToInstall[@]}" 1> /dev/null
+    pacman -S --noconfirm "${packagesToInstall[@]}" 1> /dev/null 2>&1
     clear
     echo -e "\e[1;32mAll user preference packages installed...\e[0m"
 else
     for pkg in "${packagesToInstall[@]}"; do
         read -p "Install $pkg? (y/N) " temp
         if [[ "$temp" == "y" || "$temp" == "Y" ]]; then
-            pacman -S --noconfirm "$pkg" 1> /dev/null
+            pacman -S --noconfirm "$pkg" 1> /dev/null 2>&1
             echo -e "\e[1;32m$pkg Installed...\e[0m"
             clear
             sleep 1
@@ -98,7 +101,7 @@ fi
 echo -e "\n\e[1;34m+++++ Setup system user +++++\e[0m"
 read -p "What is your username? " systemUsername
 
-useradd -m -g users -G wheel,storage,power -s /bin/bash "$systemUsername" 1> /dev/null
+useradd -m -g users -G wheel,storage,power -s /bin/bash "$systemUsername" 1> /dev/null 2>&1
 echo -e "\e[1;32mUser setup was concluded...\e[0m\n"
 
 read -p "Now set a password: " -s userPassword
@@ -139,7 +142,7 @@ echo -e "\n\e[1;34mSetting up the nerd fonts... \e[0m"
 cd /home/"$systemUsername"/Downloads
 sudo -u "$systemUsername" wget -q "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/3270.zip" "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/NerdFontsSymbolsOnly.zip" "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/Ubuntu.zip" "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/Hack.zip"
 for fileToUnzip in *.zip; do
-    unzip -o "$fileToUnzip" -d /usr/share/fonts/ 1> /dev/null
+    unzip -o "$fileToUnzip" -d /usr/share/fonts/ 1> /dev/null 2>&1
     rm "$fileToUnzip"
 done
 echo -e "\e[1;32mNerdFonts installed...\e[0m\n"
@@ -174,7 +177,7 @@ commandList=(
     "alias dcu='docker compose up'"
     "alias dcd='docker compose down'"
     "alias db='docker build .'"
-    "alias update='sudo pacman -Syu && yay -Syu --devel'"
+    "alias update='sudo pacman -Syu --noconfirm && yay -Syu --noconfirm --devel'"
     "alias refresh='source ~/.bashrc'"
     "export EDITOR=/usr/bin/nvim"
     "PS1='\[\e[32m\]>> \[\e[34m\]\w \[\e[31m\]$\[\e[0m\] '"
@@ -184,10 +187,9 @@ commandList=(
 for cmd in "${commandList[@]}"; do
     echo "$cmd" >> .bashrc
     echo -e "\e[1;32m$cmd - was installed...\e[0m"
-    sleep 1
-    clear
 done
-echo ""
+sleep 1
+clear
 
 ## Setup yay
 read -p "Start yay installer? (Y/n) " installYay
@@ -196,12 +198,12 @@ if [[ "$installYay" == "n" || "$installYay" == "N" ]]; then
 else
     echo -e "\n\e[1;34mSetting up yay... \e[0m"
     cd /home/"$systemUsername"/Downloads
-    sudo -u "$systemUsername" git clone https://aur.archlinux.org/yay.git 1> /dev/null
+    sudo -u "$systemUsername" git clone https://aur.archlinux.org/yay.git 1> /dev/null 2>&1
     clear
     echo -e "\e[1;32mYay repository cloned...\e[0m "
 
     cd yay
-    sudo -u "$systemUsername" makepkg -si 1> /dev/null
+    sudo -u "$systemUsername" makepkg -si 1> /dev/null 2>&1
     clear
     echo -e "\e[1;32mYay installed...\e[0m"
     sleep 1
@@ -221,7 +223,7 @@ else
         for pkg in "${aurPackagesToInstall[@]}"; do
             read -p "Install $pkg? (y/N) " temp
             if [[ "$temp" == "y" || "$temp" == "Y" ]]; then
-                sudo -u "$systemUsername" yay -S "$pkg"
+                sudo -u "$systemUsername" yay -S --noconfirm "$pkg" 1> /dev/null 2>&1
                 echo -e "\e[1;32m$pkg Installed...\e[0m"
                 sleep 1
                 clear
@@ -229,6 +231,7 @@ else
         done
     fi
 fi
+clear
 
 ## Setup git
 echo -e "\n\e[1;34m+++++ Setup git +++++\e[0m"
@@ -257,14 +260,15 @@ fi
 ## Workspace setup
 echo -e "\n\e[1;34m+++++ Setup workspace +++++\e[0m\n"
 cd /home/"$systemUsername"/Downloads
-sudo -u "$systemUsername" git clone https://github.com/Matheus-Ei/Hyprland-Settings.git 1> /dev/null
-sudo -u "$systemUsername" git clone https://github.com/Matheus-Ei/Wofi-Settings.git 1> /dev/null
-sudo -u "$systemUsername" git clone https://github.com/Matheus-Ei/Waybar-Settings.git 1> /dev/null
-sudo -u "$systemUsername" git clone https://github.com/Matheus-Ei/Yazi-Settings.git 1> /dev/null
-sudo -u "$systemUsername" git clone https://github.com/Matheus-Ei/Kitty-Settings.git 1> /dev/null
-sudo -u "$systemUsername" git clone https://github.com/Matheus-Ei/Nvim-Settings.git 1> /dev/null
-clear
+sudo -u "$systemUsername" git clone https://github.com/Matheus-Ei/Hyprland-Settings.git 1> /dev/null 2>&1
+sudo -u "$systemUsername" git clone https://github.com/Matheus-Ei/Wofi-Settings.git 1> /dev/null 2>&1
+sudo -u "$systemUsername" git clone https://github.com/Matheus-Ei/Waybar-Settings.git 1> /dev/null 2>&1
+sudo -u "$systemUsername" git clone https://github.com/Matheus-Ei/Yazi-Settings.git 1> /dev/null 2>&1
+sudo -u "$systemUsername" git clone https://github.com/Matheus-Ei/Kitty-Settings.git 1> /dev/null 2>&1
+sudo -u "$systemUsername" git clone https://github.com/Matheus-Ei/Nvim-Settings.git 1> /dev/null 2>&1
 echo -e "\e[1;32mCloning settings repository...\e[0m"
+sleep 1
+clear
 
 mv Hyprland-Settings /home/"$systemUsername"/.config/hypr
 mv Wofi-Settings /home/"$systemUsername"/.config/wofi
@@ -272,8 +276,9 @@ mv Waybar-Settings /home/"$systemUsername"/.config/waybar
 mv Yazi-Settings /home/"$systemUsername"/.config/yazi
 mv Kitty-Settings /home/"$systemUsername"/.config/kitty
 mv Nvim-Settings /home/"$systemUsername"/.config/nvim
-clear
 echo -e "\e[1;32mThe setup of the settings repos was a success...\e[0m"
+sleep 1
+clear
 
 ### Monitor setup
 cd /home/"$systemUsername"/.config/
@@ -330,11 +335,11 @@ read -p "Setup the virtual machine manager KVM? (y/N) " setupKvm
 if [[ "$setupKvm" == "y" || "$setupKvm" == "Y" ]]; then
     ## Install QEMU, libvirt, viewers and tools
     echo -e "\n\e[1;34mInstalling QEMU, libvirt viewers and tools... \e[0m"
-    pacman -S --noconfirm qemu-full qemu-img libvirt virt-install virt-manager virt-viewer edk2-ovmf swtpm guestfs-tools libosinfo firewalld dnsmasq
+    pacman -S --noconfirm qemu-full qemu-img libvirt virt-install virt-manager virt-viewer edk2-ovmf swtpm guestfs-tools libosinfo firewalld dnsmasq 1> /dev/null 2>&1
     clear
 
     echo -e "\nInstalling tuned with yay... "
-    sudo -u "$systemUsername" yay -S tuned
+    sudo -u "$systemUsername" yay --noconfirm -S tuned 1> /dev/null 2>&1
     clear
     
     ## Enable monolithic daemon
