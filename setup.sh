@@ -75,7 +75,7 @@ packagesToInstall=(
     "tmux" "yazi" "bashtop"
     "docker" "dbeaver" "man" "neovim" "git" "qbittorrent"
     "firefox" "torbrowser-launcher"
-    "python" "python3" "nodejs" "jdk-openjdk" "gcc" "postgresql"
+    "python3" "python-pip" "nodejs" "npm" "jdk-openjdk" "gcc" "postgresql"
     "libreoffice" "audacity" "gimp" "obs-studio" "vlc" "loupe"
 )
 if [[ "$installUserPreference" == "n" || "$installUserPreference" == "N" ]]; then
@@ -232,6 +232,100 @@ else
     fi
 fi
 clear
+
+## Setup flatpak
+read -p "Start flatpak installer? (Y/n) " installFlatpak
+
+if [[ "$installFlatpak" == "n" || "$installFlatpak" == "N" ]]; then
+    echo -e "\e[1;33mSkipping the flatpak setup...\e[0m\n"
+else
+    echo -e "\n\e[1;34mSetting up flatpak... \e[0m"
+    
+    pacman -S --noconfirm flatpak 1> /dev/null 2>&1
+    flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+    echo -e "\e[1;32mFlatpak installed...\e[0m\n"
+
+    read -p "Start flatpak packages installer? (Y/n) " installFlatpakPackages
+
+    flatpakPackagesToInstall=(
+        "com.getpostman.Postman"
+    )
+
+    if [[ "$installFlatpakPackages" == "n" || "$installFlatpakPackages" == "N" ]]; then
+        echo -e "\e[1;33mSkipping the flatpak packages installer...\e[0m\n"
+    else
+        for pkg in "${flatpakPackagesToInstall[@]}"; do
+            read -p "Install $pkg? (y/N) " temp
+            if [[ "$temp" == "y" || "$temp" == "Y" ]]; then
+                echo -e "\nInstalling $pkg..."
+                flatpak install -y flathub "$pkg" 1> /dev/null 2>&1
+                echo -e "\e[1;32m$pkg Installed...\e[0m\n"
+            else
+                echo -e "\e[1;33mSkipping $pkg...\e[0m\n"
+            fi
+        done
+    fi
+fi
+
+## Setup docker
+read -p "Start docker setup? (Y/n) " setupDocker
+if [[ "$setupDocker" == "n" || "$setupDocker" == "N" ]]; then
+    echo -e "\e[1;33mSkipping the docker setup...\e[0m\n"
+else
+    echo -e "\n\e[1;34mSetting up docker... \e[0m"
+    pacman -S --noconfirm docker 1> /dev/null 2>&1
+    systemctl enable --now docker.service
+    usermod -aG docker "$systemUsername"
+    echo -e "\e[1;32mDocker installed...\e[0m\n"
+fi
+
+## Setup Wine
+read -p "Start wine setup? (Y/n) " setupWine
+if [[ "$setupWine" == "n" || "$setupWine" == "N" ]]; then
+    echo -e "\e[1;33mSkipping the wine setup...\e[0m\n"
+else
+    echo -e "\n\e[1;34mSetting up wine... \e[0m"
+    pacman -S --noconfirm wine wine-mono wine_gecko winetricks 1> /dev/null 2>&1
+    winecfg
+    echo -e "\e[1;32mWine installed...\e[0m\n"
+fi
+
+## Setup games
+read -p "Start games setup? (Y/n) " setupGames
+if [[ "$setupGames" == "n" || "$setupGames" == "N" ]]; then
+    echo -e "\e[1;33mSkipping the games setup...\e[0m\n"
+else
+    echo -e "\n\e[1;34mSetting up games... \e[0m"
+    pacman -S --noconfirm steam 1> /dev/null 2>&1
+
+    # CurseForge
+    sudo -u "$systemUsername" wget -q "https://curseforge.overwolf.com/downloads/curseforge-latest-linux.zip" 1> /dev/null 2>&1
+    unzip -o curseforge-latest-linux.zip -d /home/"$systemUsername"/Documents/
+    rm curseforge-latest-linux.zip
+    mv /home/"$systemUsername"/Documents/build/* /home/"$systemUsername"/Documents/CurseForge
+    rmdir /home/"$systemUsername"/Documents/build
+
+    echo -e "\e[1;32mGames installed...\e[0m\n"
+fi
+
+## Setup pgadmin
+read -p "Start pgadmin setup? (Y/n) " setupPgadmin
+if [[ "$setupPgadmin" == "n" || "$setupPgadmin" == "N" ]]; then
+    echo -e "\e[1;33mSkipping the pgadmin setup...\e[0m\n"
+else
+    echo -e "\n\e[1;34mSetting up pgadmin... \e[0m"
+    pacman -S --noconfirm python3 python-pip 1> /dev/null 2>&1
+
+    mkdir /var/lib/pgadmin
+    sudo chown "$systemUsername" /var/lib/pgadmin
+
+    cd /var/lib/pgadmin
+    python3 -m .venv 1> /dev/null 2>&1
+    source .venv/bin/activate
+    pip install pgadmin4 1> /dev/null 2>&1
+    cd
+    echo -e "\e[1;32mPgadmin installed...\e[0m\n"
+fi
 
 ## Setup git
 echo -e "\n\e[1;34m+++++ Setup git +++++\e[0m"
