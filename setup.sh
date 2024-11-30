@@ -47,6 +47,8 @@ pacman -Sy --noconfirm 1> /dev/null 2>&1
 echo -e "\e[1;32mRepository updated...\e[0m"
 pacman -Su --noconfirm 1> /dev/null 2>&1
 echo -e "\e[1;32mSystem upgraded...\e[0m\n"
+
+sleep 1
 clear
 
 ## Nvidia GPU
@@ -66,6 +68,7 @@ echo -e "\e[1;32mTheme packages installed...\e[0m"
 ## Basic tools
 pacman -S --noconfirm wl-clipboard openssh base-devel zip unzip 1> /dev/null 2>&1
 echo -e "\e[1;32mBasic tools installed...\e[0m"
+
 sleep 1
 clear
 
@@ -91,10 +94,10 @@ else
         if [[ "$temp" == "y" || "$temp" == "Y" ]]; then
             pacman -S --noconfirm "$pkg" 1> /dev/null 2>&1
             echo -e "\e[1;32m$pkg Installed...\e[0m"
-            clear
             sleep 1
         fi
     done
+    clear
 fi
 
 # System user setup
@@ -277,6 +280,9 @@ else
     systemctl enable --now docker.service
     usermod -aG docker "$systemUsername"
     echo -e "\e[1;32mDocker installed...\e[0m\n"
+
+    sleep 1
+    clear
 fi
 
 ## Setup Wine
@@ -288,6 +294,9 @@ else
     pacman -S --noconfirm wine wine-mono wine_gecko winetricks 1> /dev/null 2>&1
     winecfg
     echo -e "\e[1;32mWine installed...\e[0m\n"
+
+    sleep 1
+    clear
 fi
 
 ## Setup games
@@ -304,27 +313,10 @@ else
     rm curseforge-latest-linux.zip
     mv /home/"$systemUsername"/Documents/build/* /home/"$systemUsername"/Documents/CurseForge
     rmdir /home/"$systemUsername"/Documents/build
-
     echo -e "\e[1;32mGames installed...\e[0m\n"
-fi
 
-## Setup pgadmin
-read -p "Start pgadmin setup? (Y/n) " setupPgadmin
-if [[ "$setupPgadmin" == "n" || "$setupPgadmin" == "N" ]]; then
-    echo -e "\e[1;33mSkipping the pgadmin setup...\e[0m\n"
-else
-    echo -e "\n\e[1;34mSetting up pgadmin... \e[0m"
-    pacman -S --noconfirm python3 python-pip 1> /dev/null 2>&1
-
-    mkdir /var/lib/pgadmin
-    sudo chown "$systemUsername" /var/lib/pgadmin
-
-    cd /var/lib/pgadmin
-    python3 -m .venv 1> /dev/null 2>&1
-    source .venv/bin/activate
-    pip install pgadmin4 1> /dev/null 2>&1
-    cd
-    echo -e "\e[1;32mPgadmin installed...\e[0m\n"
+    sleep 1
+    clear
 fi
 
 ## Setup git
