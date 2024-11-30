@@ -58,7 +58,7 @@ if [[ "$hasNvidia" == "y" || "$hasNvidia" == "Y" ]]; then
 fi
 
 ## System base packages
-pacman -S --noconfirm pulseaudio pulseaudio-alsa alsa-utils sudo networkmanager dhcpcd bluez wget curl go 1> /dev/null 2>&1
+pacman -S --noconfirm pulseaudio pulseaudio-alsa alsa-utils sudo networkmanager dhcpcd bluez wget curl go ifuse 1> /dev/null 2>&1
 echo -e "\e[1;32mSystem base packages installed...\e[0m"
 
 ## Theme
