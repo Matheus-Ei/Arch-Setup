@@ -1,14 +1,12 @@
 #!/bin/bash
 echo "Run this program as root"
-read -p "Start the instalation? (Y/n) " startInstall
+read -p "Start the installation? (Y/n) " startInstall
 if [ "$startInstall" == "n" ]; then
     exit
 fi
 
 ## Has nvidia GPU
 read -p "Do you have a nvidia GPU? (y/N) " hasNvidia
-
-
 
 # Enable processes
 echo "+++++ Enable Processes +++++"
@@ -19,7 +17,7 @@ processesToEnable=(
 )
 lengthProcesses=${#processesToEnable[@]}
 
-for ((i=0; i<$lengthProcesses; i++)) do
+for ((i=0; i<$lengthProcesses; i++)); do
     systemctl enable --now ${processesToEnable[$i]} 1> /dev/null
     echo "${processesToEnable[$i]} enabled... "
     sleep 1
@@ -29,8 +27,6 @@ done
 echo -e "+++++ Setup basic settings +++++"
 echo "Setting up the time... \n"
 timedatectl set-timezone America/Sao_Paulo
-
-
 
 # Packages setup
 ## Pacman
@@ -103,8 +99,6 @@ else
     done
 fi
 
-
-
 # System user setup
 echo "+++++ Setup system user +++++"
 read -p "What is your username? " systemUsername
@@ -117,8 +111,7 @@ echo ""
 read -p "Repeat the password: " -s repeatPassword
 echo ""
 
-while [ $userPassword != $repeatPassword ]
-do
+while [ "$userPassword" != "$repeatPassword" ]; do
     echo "The passwords don't match... try again... "
     read -p "Set a password: " -s userPassword
     echo ""
@@ -140,12 +133,10 @@ echo -e "====----------------------====\n"
 read -p "Press enter when ready... "
 nvim /etc/sudoers
 
-## Basic directiories
-echo -e "+++++ Setup basic directiories +++++"
+## Basic directories
+echo -e "+++++ Setup basic directories +++++"
 cd /home/$systemUsername
 sudo -u $systemUsername mkdir Downloads Documents Pictures Commands Code .ssh .config
-
-
 
 ## Setup nerd fonts
 echo "Setting up the nerdfonts... "
@@ -156,7 +147,6 @@ for fileToUnzip in *.zip; do
     rm "$fileToUnzip"
 done
 echo -e "NerdFonts installed... \n"
-
 
 ## Setup .bashrc
 echo "Setting up .bashrc... "
@@ -201,12 +191,11 @@ commandList=(
 )
 lengthCommandList=${#commandList[@]}
 
-for ((i=0; i<$lengthCommandList; i++)) do
+for ((i=0; i<$lengthCommandList; i++)); do
     echo ${commandList[$i]} >> .bashrc
     echo "${commandList[$i]} - was installed... "
 done
 echo ""
-
 
 ## Setup yay
 read -p "Start yay installer? (Y/n) " installYay
@@ -226,7 +215,6 @@ else
     cd /home/$systemUsername/Downloads
     rm -r yay
 
-
     ## Aur packages installer
     read -p "Start aur packages installer? (Y/n) " installAurPackages
     aurPackagesToInstall=(
@@ -236,21 +224,19 @@ else
 
     if [ "$installAurPackages" == "n" ]; then
         echo -e "Skipping the aur packages installer... \n"
-
     else
         for ((i=0; i<$lengthPackagesAur; i++)); do
             read -p "Install ${aurPackagesToInstall[$i]}? (y/N) " temp
             if [ "$temp" == "y" ]; then
-                sudo -u systemUsername yay -S ${aurPackagesToInstall[$i]}
+                sudo -u $systemUsername yay -S ${aurPackagesToInstall[$i]}
                 sleep 1
-    
+
                 echo "${aurPackagesToInstall[$i]} Installed... "
                 sleep 1
             fi 
         done
     fi
 fi
-
 
 ## Setup git
 echo "+++++ Setup git +++++"
@@ -274,7 +260,6 @@ else
     cat /home/$systemUsername/.ssh/id_ed25519.pub
     read -p "Press enter when you finished... "
 fi
-
 
 ## Workspace setup
 echo -e "+++++ Setup workspace +++++\n"
@@ -308,7 +293,7 @@ sleep 1
 xrandr --listmonitors
 read -p "press enter when you are ready... "
 nvim hypr/hyprland.conf
-   
+
 echo "Edit the waybar/config file and change this to set the width of your bar: "
 echo "====----------------------===="
 echo '"width": the_width_of_your_monitor'
@@ -340,8 +325,6 @@ if [ "$hasNvidia" == "y" ]; then
 else
     echo -e "Skipping wayland nvidia setup... \n"
 fi
-
-
 
 # Setup virtual machine manager KVM
 read -p "Setup the virtual machine manager KVM? (y/N) " setupKvm
@@ -389,10 +372,8 @@ if [ "$setupKvm" == "y" ]; then
     echo -e "KVM virtual machine manager was installed... \n"
     sleep 1
 else
-    echo -e "Skipping KVM vitual machine setup... \n"
+    echo -e "Skipping KVM virtual machine setup... \n"
 fi
-
-
 
 read -p "Press enter to reboot the system... "
 reboot
