@@ -253,6 +253,7 @@ else
     flatpakPackagesToInstall=(
         "rest.insomnia.Insomnia"
         "org.pgadmin.pgadmin4"
+        "org.dbgate.DbGate"
     )
 
     if [[ "$installFlatpakPackages" == "n" || "$installFlatpakPackages" == "N" ]]; then
