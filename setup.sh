@@ -251,7 +251,8 @@ else
     read -p "Start flatpak packages installer? (Y/n) " installFlatpakPackages
 
     flatpakPackagesToInstall=(
-        "com.getpostman.Postman"
+        "rest.insomnia.Insomnia"
+        "org.pgadmin.pgadmin4"
     )
 
     if [[ "$installFlatpakPackages" == "n" || "$installFlatpakPackages" == "N" ]]; then
